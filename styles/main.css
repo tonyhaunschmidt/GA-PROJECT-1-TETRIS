@@ -1,0 +1,16 @@
+.game-grid {
+  border: 1px solid black;
+  width: 50vw;
+  height: 100vw;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.game-grid div {
+  background-color: red;
+
+}
+
+.block {
+  background-color: blue;
+}
