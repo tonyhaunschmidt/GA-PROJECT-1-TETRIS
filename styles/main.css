@@ -1,3 +1,5 @@
+
+
 .game-grid {
   border: 1px solid black;
   width: 50vw;
@@ -7,10 +9,10 @@
 }
 
 .game-grid div {
-  background-color: red;
+  /*background-color: red;*/
 
 }
 
 .block {
-  background-color: blue;
+  background-color: purple;
 }
