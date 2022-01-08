@@ -28,7 +28,7 @@ function init() {
 
 
   //DEFINING THE TETROMINOES
-  const ITetromino = [[1, 1, 1, 1], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]
+  const ITetromino = [[0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0]]
   const OTetromino = [[1, 1],[1, 1]]
   const TTetromino = [[1, 1, 1], [0, 1, 0], [0, 0, 0]]
   const JTetromino = [[0, 1, 0], [0, 1, 0], [1, 1, 0]]
@@ -63,16 +63,9 @@ function init() {
       TLSpawnPosition += (gameGridWidth - tetromino.length)
     }
   }
-  
+
 
   //MOVEMENTS
-
-  //function checkClash() {
-  //check clash with wall and check clash with other block classes
-  //(run through the active array)-- may need one for each direction
-  //}
-
-
   function moveDown(){
     despawnTetromino(ActiveTetromino, TLSpawnPosition)
     //check clash function
@@ -96,6 +89,7 @@ function init() {
 
   function rotate() {
     despawnTetromino(ActiveTetromino, TLSpawnPosition)
+    //checkclashfunction
     const rotatedArray = []
     for (let i = 0; i < ActiveTetromino.length; i++) {
       rotatedArray.push([])
@@ -107,6 +101,12 @@ function init() {
     SpawnTetromino(ActiveTetromino, TLSpawnPosition)
   }
 
+  //CLASH CHECKS
+  // could have a function that runs through all directions and if any will return a clash then return value 'left clash' and then when calling the function
+
+  //have outside of whole grid have a block class- this way we will only need to check for block class
+  //can we create a next postion array that passes through??
+  //so instead of just moving the spawn postion- dummy move it and then run a dummy respawn that checks if any of the cells that the block class would be added to already has a block class. 
 
   //CONTROL BOARD
   function handleKeyDown(e) {

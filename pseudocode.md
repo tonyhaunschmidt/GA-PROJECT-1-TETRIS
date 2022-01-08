@@ -81,13 +81,19 @@ moveRight (function)
 3- spawn position ++
 4- Call spawnTetromino
 
-
-
-
+rotate (function)
+1- call despawnTetromino
+2- check clash function
+3- rotate
+4- Call spawnTetromino
+//will need to move over if there is a clash!-- need to think about
 
 checkClash (function)
-check clash with wall and check clash with other block classes
-(run through the active array)-- may need one for each direction
+ // could have a function that runs through all directions and if any will return a clash then return value 'left clash' and then when calling the function
+
+  //have outside of whole grid have a block class- this way we will only need to check for block class
+  //can we create a next postion array that passes through??
+  //so instead of just moving the spawn postion- dummy move it and then run a dummy respawn that checks if any of the cells that the block class would be added to already has a block class. 
 
 
 GAMELOOP:
