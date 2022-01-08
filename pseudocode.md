@@ -44,3 +44,55 @@ for (let i = 0; i < tetrominoes.randomTetromino.length; i++){
 }
 
 this should run through the choice tetromino and add the block class where needed. 
+Despawn is the same except for removing the block class
+
+
+These spawn & despawn functions will be used on pretty much every move of the game
+  -we just need to change the start position and for rotations or switch of tetromino, we just change the tetromino argument. 
+
+
+
+active Tetromino Status update (function)-- is this needed? 
+-updates all the stats of the active tetromino- to be used just before spawning
+
+
+MOVEMENT:
+pattern for any movement
+1- call despawnTetromino
+2- call checkClash
+2- Tetromino Status Update (tetromino & spawn position)
+3 -Call spawnTetromino
+
+movedown (function)
+1- call despawnTetromino
+2- check clash function
+3- spawn position += width
+4- Call spawnTetromino
+
+moveLeft (function)
+1- call despawnTetromino
+2- check clash function
+3- spawn position --
+4- Call spawnTetromino
+
+moveRight (function)
+1- call despawnTetromino
+2- check clash function
+3- spawn position ++
+4- Call spawnTetromino
+
+
+
+
+
+checkClash (function)
+check clash with wall and check clash with other block classes
+(run through the active array)-- may need one for each direction
+
+
+GAMELOOP:
+move down
+
+
+keys;
+calls the movement functions
