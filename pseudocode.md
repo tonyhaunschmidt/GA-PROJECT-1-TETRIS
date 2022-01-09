@@ -109,4 +109,7 @@ move down
 cant move down check- calls the new block if false
 
 
+que:
+just a list of images
+store que values in an array. 
 
