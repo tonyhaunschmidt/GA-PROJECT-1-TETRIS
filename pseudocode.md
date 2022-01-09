@@ -106,6 +106,7 @@ calls the movement functions
 
 GAMELOOP:
 move down
+cant move down check- calls the new block if false
 
 
 

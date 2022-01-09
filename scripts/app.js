@@ -26,16 +26,20 @@ function init() {
 
   //DEFINING THE TETROMINOES
   class Tetromino {
-    constructor(type = [], cellPositions = [], currentTLSpawnPosition = 4, nextTLSpawnPosition = 4){
+    constructor(type = [], cellPositions = [], currentTLSpawnPosition = 4, nextTLSpawnPosition = 4, nextTypeAndRotation = []){
       this.type = type
       this.cellPositions = cellPositions
       this.currentTLSpawnPosition = currentTLSpawnPosition
       this.nextTLSpawnPosition = nextTLSpawnPosition
+      this.nextTypeAndRotation = nextTypeAndRotation
     }
+    ///adding methods for the movement functions
   }
   let activeTetromino = new Tetromino([], [], 4) 
   
-
+  // makes these into objects too? for the colour?
+  // const ITetromino = {blocks: [0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0], colour = 'green']
+  // would require a bit more refactoring to target the block positions and then impliment the colour of the block on spawn. 
   const ITetromino = [[0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0]]
   const OTetromino = [[1, 1],[1, 1]]
   const TTetromino = [[1, 1, 1], [0, 1, 0], [0, 0, 0]]
@@ -90,62 +94,48 @@ function init() {
   }
 
   //MOVEMENTS
-  //function Movements (tetromino, movement){
-  //  if (movement = moveDown)
-  // m}
-
-
-  function moveDown(tetromino){
+  function movement (tetromino, movement){
     despawnTetromino(tetromino)
-
-    tetromino.nextTLSpawnPosition = tetromino.currentTLSpawnPosition + gameGridWidth
     
-    if (checkMovementClash(tetromino)){
-      tetromino.currentTLSpawnPosition = tetromino.nextTLSpawnPosition  
-    }
-    spawnTetromino(tetromino)
-  }
-
-  function moveLeft(tetromino){
-    despawnTetromino(tetromino)
-    tetromino.currentTLSpawnPosition --  
-    spawnTetromino(tetromino)
-  }
-
-  function moveRight(tetromino){
-    despawnTetromino(tetromino)
-    tetromino.currentTLSpawnPosition ++  
-    spawnTetromino(tetromino)
-  }
-
-  function rotate(tetromino) {
-    despawnTetromino(tetromino)
-    const rotatedArray = []
-    for (let i = 0; i < tetromino.type.length; i++) {
-      rotatedArray.push([])
-      for (let j = 0; j < tetromino.type.length; j++) {
-        rotatedArray[i].unshift(tetromino.type[j][i])
+    if (movement === 'move down'){
+      tetromino.nextTLSpawnPosition = tetromino.currentTLSpawnPosition + gameGridWidth
+      tetromino.nextTypeAndRotation = tetromino.type
+    } else if (movement === 'move left'){
+      tetromino.nextTLSpawnPosition = tetromino.currentTLSpawnPosition - 1
+      tetromino.nextTypeAndRotation = tetromino.type
+    } else if (movement === 'move right'){
+      tetromino.nextTLSpawnPosition = tetromino.currentTLSpawnPosition + 1
+      tetromino.nextTypeAndRotation = tetromino.type
+    } else if (movement === 'rotate'){
+      tetromino.nextTLSpawnPosition = tetromino.currentTLSpawnPosition
+      tetromino.nextTypeAndRotation = []
+      for (let i = 0; i < tetromino.type.length; i++) { // add a while loop that moves over if block class is 
+        tetromino.nextTypeAndRotation.push([])
+        for (let j = 0; j < tetromino.type.length; j++) {
+          tetromino.nextTypeAndRotation[i].unshift(tetromino.type[j][i])
+        }
       }
+    } else if (movement === 'swap'){
+      tetromino.nextTypeAndRotation = tetrominoes[Math.floor(Math.random() * 7)] //change from random to next in que
     }
-    tetromino.type = rotatedArray
+    if (checkMovementClash(tetromino)){
+      tetromino.currentTLSpawnPosition = tetromino.nextTLSpawnPosition
+      tetromino.type = tetromino.nextTypeAndRotation
+    }
     spawnTetromino(tetromino)
   }
 
-  function switchActiveTetromino(){ ///just playing about- will need refactoring after showing tetromino que
-    despawnTetromino(activeTetromino)
-    const newTetromino = new Tetromino(tetrominoes[Math.floor(Math.random() * 7)], [], activeTetromino.currentTLSpawnPosition)
-    activeTetromino = newTetromino
-    spawnTetromino(activeTetromino)
-  }
+
+  //
 
   //CLASH CHECKS
   // could have a function that runs through all directions and if any will return a clash then return value 'left clash' and then when calling the function  
   function checkMovementClash(tetromino){
     const clashCheckArray = []
     let cellCheck = tetromino.nextTLSpawnPosition
-    for (let i = 0; i < tetromino.type.length; i++){
-      for (let j = 0; j < tetromino.type.length; j++){
-        if (tetromino.type[i][j] === 1 && gameGridCells[cellCheck].classList.contains('block')){
+    for (let i = 0; i < tetromino.nextTypeAndRotation.length; i++){
+      for (let j = 0; j < tetromino.nextTypeAndRotation.length; j++){
+        if (tetromino.nextTypeAndRotation[i][j] === 1 && gameGridCells[cellCheck].classList.contains('block')){
           clashCheckArray.push('clash')
         }        
         cellCheck ++
@@ -168,22 +158,18 @@ function init() {
     const space = 32
     
     if (key === left){
-      //if dummy check is false then move left
-      moveLeft(activeTetromino)
+      movement(activeTetromino, 'move left')
     } else if (key === right){
-      // if dummy check is false then move right
-      moveRight(activeTetromino)
+      movement(activeTetromino, 'move right')
     } else if (key === up){
-      // if dummy check -- move over THEN rotate
-      rotate(activeTetromino)
+      movement(activeTetromino, 'rotate')
     } else if (key === down){
       // if dummy check is false then move down if true then activate new tetromino
-      moveDown(activeTetromino)
+      movement(activeTetromino, 'move down')
     } else if (key === space){
       //if dummy check is false then replace tetromino
-      switchActiveTetromino()
+      movement(activeTetromino, 'swap')
     }
-    console.log(key)
   }
   document.addEventListener('keydown', handleKeyDown)
 
@@ -194,8 +180,8 @@ function init() {
 
   function gameLoop() {
     setInterval(() => {
-      moveDown(activeTetromino)
-      moveDown(dummyTet)
+      movement(activeTetromino, 'move down')
+      movement(dummyTet, 'move down')
       console.log(activeTetromino.currentTLSpawnPosition)
     }, gameLoopIntervalTime)
   }
