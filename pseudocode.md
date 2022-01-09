@@ -63,6 +63,8 @@ pattern for any movement
 2- Tetromino Status Update (tetromino & spawn position)
 3 -Call spawnTetromino
 
+// will also need a refresh of dummy and shadow if using. 
+
 movedown (function)
 1- call despawnTetromino
 2- check clash function
@@ -96,9 +98,14 @@ checkClash (function)
   //so instead of just moving the spawn postion- dummy move it and then run a dummy respawn that checks if any of the cells that the block class would be added to already has a block class. 
 
 
+
+keys;
+calls the movement functions
+
+
+
 GAMELOOP:
 move down
 
 
-keys;
-calls the movement functions
+

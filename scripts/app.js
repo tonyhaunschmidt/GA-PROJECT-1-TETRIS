@@ -10,24 +10,31 @@ function init() {
   function generateGrid(){
     for (let i = 0; i < gameGridCellCount; i++){
       const cell = document.createElement('div')
-      cell.style.width = `${100 / gameGridWidth}%`
+      cell.style.width = `${100 / gameGridWidth}%`//will need to play about with width and height to make it responsive
       cell.style.height = `${100 / gameGridHeight}%`
       cell.innerText = i //keep during coding and then delete
       gameGrid.appendChild(cell)
-      gameGridCells.push(cell)
+      gameGridCells.push(cell)  
+      //border
+      if (i % gameGridWidth === 0 || i % gameGridWidth === gameGridWidth - 1 || i > gameGridCellCount - gameGridWidth) {
+        gameGridCells[i].classList.add('block')
+      }
     }
   }
   generateGrid()
-
-  //will need to play about with width and height to make it responsive
   
-  
-  //IN PLAY/ACTIVE TETROMINO
-  let ActiveTetromino = []
-  let TLSpawnPosition = 4   //top left spawn position
-
 
   //DEFINING THE TETROMINOES
+  class Tetromino {
+    constructor(type = [], cellPositions = [], currentTLSpawnPosition = 4){
+      this.type = type
+      this.cellPositions = cellPositions
+      this.currentTLSpawnPosition = currentTLSpawnPosition
+    }
+  }
+  let activeTetromino = new Tetromino([], [], 4) 
+  
+
   const ITetromino = [[0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0]]
   const OTetromino = [[1, 1],[1, 1]]
   const TTetromino = [[1, 1, 1], [0, 1, 0], [0, 0, 0]]
@@ -40,71 +47,99 @@ function init() {
   
 
   //SPAWN
-  function SpawnTetromino(tetromino, TLSpawnPosition){
-    for (let i = 0; i < tetromino.length; i++){
-      for (let j = 0; j < tetromino.length; j++){
-        if (tetromino[i][j] === 1){
-          gameGridCells[TLSpawnPosition].classList.add('block')
-        }
-        TLSpawnPosition ++
+  function spawnTetromino(tetromino){
+    let cellRender = tetromino.currentTLSpawnPosition
+    for (let i = 0; i < tetromino.type.length; i++){
+      for (let j = 0; j < tetromino.type.length; j++){
+        if (tetromino.type[i][j] === 1){
+          gameGridCells[cellRender].classList.add('block')
+          tetromino.cellPositions.push(cellRender)
+        }        
+        cellRender ++
       }
-      TLSpawnPosition += (gameGridWidth - tetromino.length)
+      cellRender += (gameGridWidth - tetromino.type.length)
     }
   }
   //DESPAWN
-  function despawnTetromino(tetromino, TLSpawnPosition){
-    for (let i = 0; i < tetromino.length; i++){
-      for (let j = 0; j < tetromino.length; j++){
-        if (tetromino[i][j] === 1){
-          gameGridCells[TLSpawnPosition].classList.remove('block')
+  function despawnTetromino(tetromino){
+    tetromino.cellPositions = []
+    let cellRender = tetromino.currentTLSpawnPosition
+    for (let i = 0; i < tetromino.type.length; i++){
+      for (let j = 0; j < tetromino.type.length; j++){
+        if (tetromino.type[i][j] === 1){
+          gameGridCells[cellRender].classList.remove('block')
         }
-        TLSpawnPosition ++
+        cellRender ++
       }
-      TLSpawnPosition += (gameGridWidth - tetromino.length)
+      cellRender += (gameGridWidth - tetromino.type.length)
     }
   }
 
 
   //MOVEMENTS
-  function moveDown(){
-    despawnTetromino(ActiveTetromino, TLSpawnPosition)
-    //check clash function
-    TLSpawnPosition += gameGridWidth
-    SpawnTetromino(ActiveTetromino, TLSpawnPosition)
+  let nextTLSpawnPosition
+  function moveDown(tetromino){
+    despawnTetromino(tetromino)
+    nextTLSpawnPosition = tetromino.currentTLSpawnPosition + gameGridWidth
+    checkClash(tetromino) //if this returns true then changes currrent spawn positon to next spawn position and then respawns
+    spawnTetromino(tetromino)
   }
 
-  function moveLeft(){
-    despawnTetromino(ActiveTetromino, TLSpawnPosition)
-    //check clash function
-    TLSpawnPosition --  
-    SpawnTetromino(ActiveTetromino, TLSpawnPosition)
+  function moveLeft(tetromino){
+    despawnTetromino(tetromino)
+    tetromino.currentTLSpawnPosition --  
+    spawnTetromino(tetromino)
   }
 
-  function moveRight(){
-    despawnTetromino(ActiveTetromino, TLSpawnPosition)
-    //check clash function
-    TLSpawnPosition ++  
-    SpawnTetromino(ActiveTetromino, TLSpawnPosition)
+  function moveRight(tetromino){
+    despawnTetromino(tetromino)
+    tetromino.currentTLSpawnPosition ++  
+    spawnTetromino(tetromino)
   }
 
-  function rotate() {
-    despawnTetromino(ActiveTetromino, TLSpawnPosition)
-    //checkclashfunction
+  function rotate(tetromino) {
+    despawnTetromino(tetromino)
     const rotatedArray = []
-    for (let i = 0; i < ActiveTetromino.length; i++) {
+    for (let i = 0; i < tetromino.type.length; i++) {
       rotatedArray.push([])
-      for (let j = 0; j < ActiveTetromino.length; j++) {
-        rotatedArray[i].unshift(ActiveTetromino[j][i])
+      for (let j = 0; j < tetromino.type.length; j++) {
+        rotatedArray[i].unshift(tetromino.type[j][i])
       }
     }
-    ActiveTetromino = rotatedArray
-    SpawnTetromino(ActiveTetromino, TLSpawnPosition)
+    tetromino.type = rotatedArray
+    spawnTetromino(tetromino)
+  }
+
+  function switchActiveTetromino(){ ///just playing about- will need refactoring after showing tetromino que
+    despawnTetromino(activeTetromino)
+    const newTetromino = new Tetromino(tetrominoes[Math.floor(Math.random() * 7)], [], activeTetromino.currentTLSpawnPosition)
+    activeTetromino = newTetromino
+    spawnTetromino(activeTetromino)
   }
 
   //CLASH CHECKS
   // could have a function that runs through all directions and if any will return a clash then return value 'left clash' and then when calling the function
 
-  //have outside of whole grid have a block class- this way we will only need to check for block class
+  
+  function checkClash(tetromino){
+    const checkClashArray = []
+    tetromino.currentTLSpawnPosition = nextTLSpawnPosition
+    let cellCheck = tetromino.currentTLSpawnPosition
+    for (let i = 0; i < tetromino.type.length; i++){
+      for (let j = 0; j < tetromino.type.length; j++){
+        if (tetromino.type[i][j] === 1 && gameGridCells[cellCheck].classList === 'block'){ //i think i just need to figure out this check and then it will work. 
+          checkClashArray.push('clash')
+          console.log(gameGridCells[cellCheck].classList)
+          console.log(checkClashArray)
+        }        
+        cellCheck ++
+      }
+      cellCheck += (gameGridWidth - tetromino.type.length)
+    }
+    console.log(checkClashArray.some(clashcheck => clashcheck === 'clash'))
+    //return checkClashArray.some(clashcheck => clashcheck === 'clash')
+  }
+
   //can we create a next postion array that passes through??
   //so instead of just moving the spawn postion- dummy move it and then run a dummy respawn that checks if any of the cells that the block class would be added to already has a block class. 
 
@@ -115,16 +150,25 @@ function init() {
     const right = 39
     const up = 38
     const down = 40
+    const space = 32
     
     if (key === left){
-      moveLeft()
+      //if dummy check is false then move left
+      moveLeft(activeTetromino)
     } else if (key === right){
-      moveRight()
+      // if dummy check is false then move right
+      moveRight(activeTetromino)
     } else if (key === up){
-      rotate()
+      // if dummy check -- move over THEN rotate
+      rotate(activeTetromino)
     } else if (key === down){
-      moveDown()
+      // if dummy check is false then move down if true then activate new tetromino
+      moveDown(activeTetromino)
+    } else if (key === space){
+      //if dummy check is false then replace tetromino
+      switchActiveTetromino()
     }
+    console.log(key)
   }
   document.addEventListener('keydown', handleKeyDown)
 
@@ -135,13 +179,22 @@ function init() {
 
   function gameLoop() {
     setInterval(() => {
-      moveDown()
+      moveDown(activeTetromino)
+      moveDown(dummyTet)
+      console.log(activeTetromino.currentTLSpawnPosition)
     }, gameLoopIntervalTime)
   }
 
   //TEST
-  ActiveTetromino = tetrominoes[Math.floor(Math.random() * 7)]
-  SpawnTetromino(ActiveTetromino, TLSpawnPosition)
+  
+  activeTetromino.type = tetrominoes[Math.floor(Math.random() * 7)]
+  //activeTet.type = tetrominoes[1]
+  const dummyTet = new Tetromino(activeTetromino.type, [], activeTetromino.currentTLSpawnPosition + (gameGridWidth * 4))
+  //const dummyTet = activeTetromino
+  //spawnTetromino(dummyTet, activeTLSpawnPosition + (gameGridWidth * 4) )
+  spawnTetromino(activeTetromino)
+  spawnTetromino(dummyTet)
+  //spawnTetromino(dummyTet)
   gameLoop()
 
 
