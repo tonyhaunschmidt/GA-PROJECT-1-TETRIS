@@ -6,6 +6,7 @@ function init() {
   const gameGridHeight = 25
   const gameGridCellCount = gameGridWidth * gameGridHeight
   const gameGridCells = []
+  const newTetrominoSpawnCell = Math.floor(gameGridWidth / 2)
 
   function generateGrid(){
     for (let i = 0; i < gameGridCellCount; i++){
@@ -22,11 +23,26 @@ function init() {
     }
   }
   generateGrid()
-  
+
+
+  //THE TETROMINOS
+  // makes these into objects too? for the colour?
+  // const ITetromino = {blocks: [0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0], colour = 'green']
+  // would require a bit more refactoring to target the block positions and then impliment the colour of the block on spawn. 
+  const ITetromino = [[0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0]]
+  const OTetromino = [[1, 1],[1, 1]]
+  const TTetromino = [[1, 1, 1], [0, 1, 0], [0, 0, 0]]
+  const JTetromino = [[0, 1, 0], [0, 1, 0], [1, 1, 0]]
+  const LTetromino = [[0, 1, 0], [0, 1, 0], [0, 1, 1]]
+  const STetromino = [[0, 1, 1], [1, 1, 0], [0, 0, 0]]
+  const ZTetromino = [[1, 1, 0], [0, 1, 1], [0, 0, 0]]
+
+  const tetrominoes = [ITetromino, OTetromino, TTetromino, JTetromino, LTetromino, STetromino, ZTetromino]
+
 
   //TETROMINO
   class Tetromino {
-    constructor(type = [], cellPositions = [], currentTLSpawnPosition = 4, nextTLSpawnPosition = 4, nextTypeAndRotation = []){
+    constructor(type = [], cellPositions = [], currentTLSpawnPosition = newTetrominoSpawnCell, nextTLSpawnPosition = newTetrominoSpawnCell, nextTypeAndRotation = []){
       this.type = type
       this.cellPositions = cellPositions
       this.currentTLSpawnPosition = currentTLSpawnPosition
@@ -100,30 +116,42 @@ function init() {
         this.currentTLSpawnPosition = this.nextTLSpawnPosition
         this.type = this.nextTypeAndRotation
         
-      } else { //HERE IS THE TETROMINO LANDING
-        if (movement === 'move down') {
+      } else { 
+        if (movement === 'move down') { //--TETROMINO LANDING--
           this.spawn()
+          this.clearedLine() 
+          //gameOver()
           this.type = (tetrominoes[Math.floor(Math.random() * 7)])  //change from random to next in que
-          this.currentTLSpawnPosition = 4 
+          this.currentTLSpawnPosition = newTetrominoSpawnCell
+          
         }
       }
       this.spawn()
     }
+    clearedLine() {
+      let clearedLineCounter = 0
+      const tetrominoLineNumbers = this.cellPositions.map(cell => Math.floor(cell / gameGridWidth))
+      for (let i = 0; i < tetrominoLineNumbers.length; i++){
+        const lineArray = [[], []]
+        for (let j = 1; j < gameGridWidth - 1; j++){
+          lineArray[0].push((gameGridWidth * tetrominoLineNumbers[i]) + j)
+          lineArray[1].push(gameGridCells[(gameGridWidth * tetrominoLineNumbers[i]) + j].classList.contains('block'))
+        }
+        if (lineArray[1].every(cell => cell === true)){ //--CLEARED LINE--
+          for (let j = 0; j < lineArray[0].length; j++){
+            gameGridCells[lineArray[0][j]].classList.remove('block') 
+          }
+          clearedLineCounter ++
+        }
+      }
+      if (clearedLineCounter === 4){
+        console.log('TETRIS')
+      }
+    }
   }
-  const activeTetromino = new Tetromino([], [], 4) 
+  const activeTetromino = new Tetromino() 
   
-  // makes these into objects too? for the colour?
-  // const ITetromino = {blocks: [0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0], colour = 'green']
-  // would require a bit more refactoring to target the block positions and then impliment the colour of the block on spawn. 
-  const ITetromino = [[0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0]]
-  const OTetromino = [[1, 1],[1, 1]]
-  const TTetromino = [[1, 1, 1], [0, 1, 0], [0, 0, 0]]
-  const JTetromino = [[0, 1, 0], [0, 1, 0], [1, 1, 0]]
-  const LTetromino = [[0, 1, 0], [0, 1, 0], [0, 1, 1]]
-  const STetromino = [[0, 1, 1], [1, 1, 0], [0, 0, 0]]
-  const ZTetromino = [[1, 1, 0], [0, 1, 1], [0, 0, 0]]
-
-  const tetrominoes = [ITetromino, OTetromino, TTetromino, JTetromino, LTetromino, STetromino, ZTetromino]
+  
   
 
   //CONTROL BOARD
@@ -142,10 +170,8 @@ function init() {
     } else if (key === up){
       activeTetromino.movement('rotate')
     } else if (key === down){
-      // if dummy check is false then move down if true then activate new tetromino
       activeTetromino.movement('move down')
     } else if (key === space){
-      //if dummy check is false then replace tetromino
       activeTetromino.movement('swap')
     }
   }
