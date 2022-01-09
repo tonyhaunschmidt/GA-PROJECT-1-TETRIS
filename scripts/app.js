@@ -26,10 +26,11 @@ function init() {
 
   //DEFINING THE TETROMINOES
   class Tetromino {
-    constructor(type = [], cellPositions = [], currentTLSpawnPosition = 4){
+    constructor(type = [], cellPositions = [], currentTLSpawnPosition = 4, nextTLSpawnPosition = 4){
       this.type = type
       this.cellPositions = cellPositions
       this.currentTLSpawnPosition = currentTLSpawnPosition
+      this.nextTLSpawnPosition = nextTLSpawnPosition
     }
   }
   let activeTetromino = new Tetromino([], [], 4) 
@@ -74,14 +75,34 @@ function init() {
       cellRender += (gameGridWidth - tetromino.type.length)
     }
   }
-
+  //POSITION CHECK
+  function tetrominoPositionCheck(tetromino){
+    let cellCheck = tetromino.currentTLSpawnPosition
+    for (let i = 0; i < tetromino.type.length; i++){
+      for (let j = 0; j < tetromino.type.length; j++){
+        if (tetromino.type[i][j] === 1){
+          tetromino.cellPositions.push(cellCheck)
+        }        
+        cellCheck ++
+      }
+      cellCheck += (gameGridWidth - tetromino.type.length)
+    }
+  }
 
   //MOVEMENTS
-  let nextTLSpawnPosition
+  //function Movements (tetromino, movement){
+  //  if (movement = moveDown)
+  // m}
+
+
   function moveDown(tetromino){
     despawnTetromino(tetromino)
-    nextTLSpawnPosition = tetromino.currentTLSpawnPosition + gameGridWidth
-    checkClash(tetromino) //if this returns true then changes currrent spawn positon to next spawn position and then respawns
+
+    tetromino.nextTLSpawnPosition = tetromino.currentTLSpawnPosition + gameGridWidth
+    
+    if (checkMovementClash(tetromino)){
+      tetromino.currentTLSpawnPosition = tetromino.nextTLSpawnPosition  
+    }
     spawnTetromino(tetromino)
   }
 
@@ -118,30 +139,24 @@ function init() {
   }
 
   //CLASH CHECKS
-  // could have a function that runs through all directions and if any will return a clash then return value 'left clash' and then when calling the function
-
-  
-  function checkClash(tetromino){
-    const checkClashArray = []
-    tetromino.currentTLSpawnPosition = nextTLSpawnPosition
-    let cellCheck = tetromino.currentTLSpawnPosition
+  // could have a function that runs through all directions and if any will return a clash then return value 'left clash' and then when calling the function  
+  function checkMovementClash(tetromino){
+    const clashCheckArray = []
+    let cellCheck = tetromino.nextTLSpawnPosition
     for (let i = 0; i < tetromino.type.length; i++){
       for (let j = 0; j < tetromino.type.length; j++){
-        if (tetromino.type[i][j] === 1 && gameGridCells[cellCheck].classList === 'block'){ //i think i just need to figure out this check and then it will work. 
-          checkClashArray.push('clash')
-          console.log(gameGridCells[cellCheck].classList)
-          console.log(checkClashArray)
+        if (tetromino.type[i][j] === 1 && gameGridCells[cellCheck].classList.contains('block')){
+          clashCheckArray.push('clash')
         }        
         cellCheck ++
       }
       cellCheck += (gameGridWidth - tetromino.type.length)
     }
-    console.log(checkClashArray.some(clashcheck => clashcheck === 'clash'))
-    //return checkClashArray.some(clashcheck => clashcheck === 'clash')
+    console.log(!clashCheckArray.some(cell => cell === 'clash'))
+    return !clashCheckArray.some(cell => cell === 'clash')
   }
 
-  //can we create a next postion array that passes through??
-  //so instead of just moving the spawn postion- dummy move it and then run a dummy respawn that checks if any of the cells that the block class would be added to already has a block class. 
+
 
   //CONTROL BOARD
   function handleKeyDown(e) {
@@ -193,7 +208,7 @@ function init() {
   //const dummyTet = activeTetromino
   //spawnTetromino(dummyTet, activeTLSpawnPosition + (gameGridWidth * 4) )
   spawnTetromino(activeTetromino)
-  spawnTetromino(dummyTet)
+  //spawnTetromino(dummyTet)
   //spawnTetromino(dummyTet)
   gameLoop()
 
