@@ -13,6 +13,27 @@
 
 }
 
+.grey {
+  background-color: grey;
+  border: 3px solid black;
+  width: 80%;
+  height: 80%;
+}
+
+.lightBlue {
+  background-color: lightblue;
+  border: 3px solid black;
+  width: 80%;
+  height: 80%;
+}
+
+.yellow {
+  background-color: yellow;
+  border: 3px solid black;
+  width: 80%;
+  height: 80%;
+}
+
 .purple {
   background-color: purple;
   border: 3px solid black;
@@ -20,8 +41,29 @@
   height: 80%;
 }
 
-.grey {
-  background-color: grey;
+.darkBlue {
+  background-color: darkblue;
+  border: 3px solid black;
+  width: 80%;
+  height: 80%;
+}
+
+.orange {
+  background-color: orange;
+  border: 3px solid black;
+  width: 80%;
+  height: 80%;
+}
+
+.green {
+  background-color: green;
+  border: 3px solid black;
+  width: 80%;
+  height: 80%;
+}
+
+.red {
+  background-color: red;
   border: 3px solid black;
   width: 80%;
   height: 80%;
