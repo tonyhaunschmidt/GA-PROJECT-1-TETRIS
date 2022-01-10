@@ -7,18 +7,22 @@ function init() {
   const gameGridCellCount = gameGridWidth * gameGridHeight
   const gameGridCells = []
   const newTetrominoSpawnCell = Math.floor(gameGridWidth / 2)
+  
 
   function generateGrid(){
     for (let i = 0; i < gameGridCellCount; i++){
       const cell = document.createElement('div')
       cell.style.width = `${100 / gameGridWidth}%`//will need to play about with width and height to make it responsive
       cell.style.height = `${100 / gameGridHeight}%`
-      cell.innerText = i //keep during coding and then delete
+      //cell.innerText = i //keep during coding and then delete
       gameGrid.appendChild(cell)
       gameGridCells.push(cell)  
       //border
       if (i % gameGridWidth === 0 || i % gameGridWidth === gameGridWidth - 1 || i > gameGridCellCount - gameGridWidth) {
         gameGridCells[i].classList.add('block')
+        const innerCell = document.createElement('div')
+        innerCell.classList.add('grey')
+        gameGridCells[i].appendChild(innerCell)
       }
     }
   }
@@ -37,16 +41,18 @@ function init() {
   const ZTetromino = [[1, 1, 0], [0, 1, 1], [0, 0, 0]]
 
   const tetrominoes = [ITetromino, OTetromino, TTetromino, JTetromino, LTetromino, STetromino, ZTetromino]
+  const tetrominoColours = ['lightBlue', 'yellow', 'purple', 'darkBlue', 'orange', 'green', 'red']
 
 
   //TETROMINO
   class Tetromino {
-    constructor(type = [], cellPositions = [], currentTLSpawnPosition = newTetrominoSpawnCell, nextTLSpawnPosition = newTetrominoSpawnCell, nextTypeAndRotation = []){
+    constructor(type = [], cellPositions = [], currentTLSpawnPosition = newTetrominoSpawnCell, nextTLSpawnPosition = newTetrominoSpawnCell, nextTypeAndRotation = [], colour = 'purple'){
       this.type = type
       this.cellPositions = cellPositions
       this.currentTLSpawnPosition = currentTLSpawnPosition
       this.nextTLSpawnPosition = nextTLSpawnPosition
       this.nextTypeAndRotation = nextTypeAndRotation
+      this.colour = colour
     }
     spawn(){
       let cellRender = this.currentTLSpawnPosition
@@ -55,6 +61,9 @@ function init() {
           if (this.type[i][j] === 1){
             gameGridCells[cellRender].classList.add('block')
             this.cellPositions.push(cellRender)
+            const innerCell = document.createElement('div')
+            innerCell.classList.add(this.colour)
+            gameGridCells[cellRender].appendChild(innerCell)
           }        
           cellRender ++
         }
@@ -66,8 +75,9 @@ function init() {
       let cellRender = this.currentTLSpawnPosition
       for (let i = 0; i < this.type.length; i++){
         for (let j = 0; j < this.type.length; j++){
-          if (this.type[i][j] === 1){
+          if (this.type[i][j] === 1){ 
             gameGridCells[cellRender].classList.remove('block')
+            gameGridCells[cellRender].removeChild(gameGridCells[cellRender].childNodes[0])
           }
           cellRender ++
         }
@@ -109,7 +119,7 @@ function init() {
           }
         }
       } else if (movement === 'swap'){
-        this.nextTypeAndRotation = tetrominoes[Math.floor(Math.random() * 7)] //change from random to next in que
+        this.nextTypeAndRotation = tetrominoes[Math.floor(Math.random() * tetrominoes.length)] //change from random to next in que
       }
       if (this.checkMovementClash()){
         this.currentTLSpawnPosition = this.nextTLSpawnPosition
@@ -120,8 +130,9 @@ function init() {
           this.spawn()
           this.clearedLine() 
           //gameOver()
-          this.type = (tetrominoes[Math.floor(Math.random() * 7)])  //change from random to next in que
+          this.type = (tetrominoes[Math.floor(Math.random() * tetrominoes.length)])  //change from random to next in que
           this.currentTLSpawnPosition = newTetrominoSpawnCell
+          this.Setcolour() 
           
         }
       }
@@ -154,6 +165,9 @@ function init() {
         console.log('TETRIS')
       }
     }
+    setColour(){
+      
+    }
   }
   const activeTetromino = new Tetromino() 
   
@@ -167,14 +181,14 @@ function init() {
     const right = 39
     const up = 38
     const down = 40
-    const space = 32
+    const space = 32 // add different keys (number pad)(touch screen for phone?)
     
     if (key === left){
       activeTetromino.movement('move left')
     } else if (key === right){
       activeTetromino.movement('move right')
     } else if (key === up){
-      activeTetromino.movement('rotate')
+      activeTetromino.movement('rotate')  //change up to drop and have x & z for rotates in different directions (call rotate * 3)
     } else if (key === down){
       activeTetromino.movement('move down')
     } else if (key === space){

@@ -13,6 +13,16 @@
 
 }
 
-.block {
+.purple {
   background-color: purple;
+  border: 3px solid black;
+  width: 80%;
+  height: 80%;
+}
+
+.grey {
+  background-color: grey;
+  border: 3px solid black;
+  width: 80%;
+  height: 80%;
 }

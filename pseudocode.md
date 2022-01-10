@@ -115,7 +115,7 @@ cleared line:   //tetromino method?? only checks the lines that the tetromino wa
 
 GAMELOOP:
 move down
-cant move down check- calls the new block if false
+add sound?
 
 
 que:
