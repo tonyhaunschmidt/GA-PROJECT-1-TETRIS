@@ -24,7 +24,6 @@ function init() {
   }
   generateGrid()
 
-
   //THE TETROMINOS
   // makes these into objects too? for the colour?
   // const ITetromino = {blocks: [0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0], colour = 'green']
@@ -90,7 +89,7 @@ function init() {
       return !clashCheckArray.some(cell => cell === 'clash')
     }
     movement(movement){
-      this.despawn()     
+      this.despawn()   
       if (movement === 'move down'){
         this.nextTLSpawnPosition = this.currentTLSpawnPosition + gameGridWidth
         this.nextTypeAndRotation = this.type
@@ -142,6 +141,13 @@ function init() {
             gameGridCells[lineArray[0][j]].classList.remove('block') 
           }
           clearedLineCounter ++
+          for (let j = tetrominoLineNumbers[i] * gameGridWidth; j >= 0; j--){ //--DROPPING THE BLOCKS--
+            if (j % gameGridWidth !== 0 && j % gameGridWidth !== gameGridWidth - 1 && gameGridCells[j].classList.contains('block')){
+              gameGridCells[j].classList.remove('block')
+              //add animation?? - on and off class with delay. 
+              gameGridCells[j + gameGridWidth].classList.add('block')
+            }
+          }
         }
       }
       if (clearedLineCounter === 4){

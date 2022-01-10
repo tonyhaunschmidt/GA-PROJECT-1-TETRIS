@@ -108,6 +108,7 @@ cleared line:   //tetromino method?? only checks the lines that the tetromino wa
     -a loop that adds each cell positons to an array and if all array items are a block then line clears
   -if check line is true then remove block class (not the border)
   -once this is done then move all other blocks down one to fill the gap. (maybe put a delay for a future animation.)
+    -run through all 
 
 
 
