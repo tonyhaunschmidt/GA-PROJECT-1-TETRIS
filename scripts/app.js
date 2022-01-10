@@ -29,14 +29,11 @@ function init() {
   generateGrid()
 
   //TETROMINO TYPES
-  // makes these into objects too? for the colour?
-  // const ITetromino = {blocks: [0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0], colour = 'green']
-  // would require a bit more refactoring to target the block positions and then impliment the colour of the block on spawn.
   class TetrominoType {
     constructor(layout, colour){
       this.layout = layout
       this.colour = colour
-      //change to have a rotation key
+      //change to have a rotation key [0, 1, 2, 3]
       //can we just have one class (i.e add methods to this one instead) and then after the types just have active, next & shadow
     }
   }
@@ -52,7 +49,8 @@ function init() {
 
 
 
-  //IN PLAY TETROMINO 
+  //IN-PLAY TETROMINO 
+  //change this to an object? 
   class Tetromino {
     constructor(type = TTetromino, cellPositions = [], currentTLSpawnPosition = newTetrominoSpawnCell, nextTLSpawnPosition = newTetrominoSpawnCell, nextTypeAndRotation = []){
       this.type = type

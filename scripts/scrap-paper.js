@@ -15,3 +15,24 @@ function rotateSquareArray(array){
 
 console.log(rotateSquareArray(array))
 
+
+
+class Person {
+  constructors(name, age){
+    this.name = name
+    this.age = age
+  }
+  logName() {
+    console.log(this.name)
+  }
+  stealName() {
+    this.name = steffi.name
+  }
+}
+
+const tony = new Person('tony', 29)
+const steffi = new Person('steffi', 27)
+
+tony.logName()
+tony.stealName()
+tony.logName()
