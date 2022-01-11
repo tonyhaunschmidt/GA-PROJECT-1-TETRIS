@@ -1,20 +1,28 @@
 
-body {
+
+main {
   display: flex;
   flex-wrap: wrap;
 }
 .game-grid {
   border: 1px solid black;
   width: 40vw;
-  height: 100vw;
+  height: 80vw;
   display: flex;
   flex-wrap: wrap;
 }
 
 .tetromino-queue {
   border: 1px solid black;
-  width: 40vw;
-  height: 100vw;
+  width: 34vw;
+  height: 23vw;
+  display: flex;
+  flex-wrap: wrap;
+}
+.tetromino-hold {
+  border: 1px solid black;
+  width: 34vw;
+  height: 23vw;
   display: flex;
   flex-wrap: wrap;
 }
@@ -23,6 +31,7 @@ body {
   /*background-color: red;*/
 
 }
+
 
 .grey {
   background-color: grey;
