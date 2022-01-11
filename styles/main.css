@@ -1,8 +1,19 @@
 
-
+body {
+  display: flex;
+  flex-wrap: wrap;
+}
 .game-grid {
   border: 1px solid black;
-  width: 50vw;
+  width: 40vw;
+  height: 100vw;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.tetromino-queue {
+  border: 1px solid black;
+  width: 40vw;
   height: 100vw;
   display: flex;
   flex-wrap: wrap;

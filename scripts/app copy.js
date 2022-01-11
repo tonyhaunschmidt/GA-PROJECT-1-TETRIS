@@ -1,78 +1,116 @@
 function init() {
 
-  //GAME STATS
+  //GAME STATS  -make this object??
   //score
   //time
-  let gameLoopIntervalTime = 1000 * 1
+  
 
   
   //SETTING THE GRID  //can this be tidied up??
-  const gameGrid = document.querySelector('.game-grid')
-  const gameGridWidth = 10
-  const gameGridHeight = 25
-  const gameGridCellCount = gameGridWidth * gameGridHeight
-  const gameGridCells = []
-  const newTetrominoSpawnCell = Math.floor((gameGridWidth / 2) - 1)
+  //const gameGrid = document.querySelector('.game-grid')
+  //const gameGridWidth = 10
+  //const gameGridHeight = 25
+  //const gameGridCellCount = gameGridWidth * gameGridHeight
+  //const gameGridCells = []
+  //const newTetrominoSpawnCell = Math.floor((gameGridWidth / 2) - 1)
   
-
-  function generateGrid(){
-    for (let i = 0; i < gameGridCellCount; i++){
-      const cell = document.createElement('div')
-      cell.style.width = `${100 / gameGridWidth}%`//will need to play about with width and height to make it responsive
-      cell.style.height = `${100 / gameGridHeight}%`
-      //cell.innerText = i //keep during coding and then delete
-      gameGrid.appendChild(cell)
-      gameGridCells.push(cell)  
-      //border
-      if (i % gameGridWidth === 0 || i % gameGridWidth === gameGridWidth - 1 || i > gameGridCellCount - gameGridWidth) {
-        gameGridCells[i].classList.add('block')
-        const innerCell = document.createElement('div')
-        innerCell.classList.add('grey')
-        gameGridCells[i].appendChild(innerCell)
+  class Grid{
+    constructor(grid, width, height, newTetrominoSpawnCell){
+      this.grid = grid
+      this.width = width
+      this.height = height
+      this.cellCount = this.width * this.height
+      this.cells = []
+      this.newTetrominoSpawnCell = newTetrominoSpawnCell
+    }
+    generateGrid(){
+      for (let i = 0; i < this.cellCount; i++){
+        const cell = document.createElement('div')
+        cell.style.width = `${100 / this.width}%`//will need to play about with width and height to make it responsive
+        cell.style.height = `${100 / this.height}%`
+        this.grid.appendChild(cell)
+        this.cells.push(cell)  
+      }
+    }
+    generateBorder(){
+      for (let i = 0; i < this.cellCount; i++){
+        if (i % this.width === 0 || i % this.width === this.width - 1 || i > this.cellCount - this.width) {
+          this.cells[i].classList.add('block')
+          const innerCell = document.createElement('div')
+          innerCell.classList.add('grey')
+          this.cells[i].appendChild(innerCell)
+        }
       }
     }
   }
-  generateGrid()
+
+  const gameGrid  = new Grid(document.querySelector('.game-grid'), 10, 25, 5)
+  //Math.floor((this.width / 2) - 1)  --will need to think about soft code for middle. deosnt like 'this.' in parameters 
+  gameGrid.generateGrid()
+  gameGrid.generateBorder()
+  const qGrid  = new Grid(document.querySelector('.tetromino-queue'), 10, 25, 5)
+  qGrid.generateGrid()
+  qGrid.generateBorder()
+
+  //function generateGrid(){
+  //  for (let i = 0; i < gameGridCellCount; i++){
+  //    const cell = document.createElement('div')
+  //    cell.style.width = `${100 / gameGridWidth}%`//will need to play about with width and height to make it responsive
+  //    cell.style.height = `${100 / gameGridHeight}%`
+  //    //cell.innerText = i //keep during coding and then delete
+  //    gameGrid.appendChild(cell)
+  //    gameGridCells.push(cell)  
+  //    //border
+  //    if (i % gameGridWidth === 0 || i % gameGridWidth === gameGridWidth - 1 || i > gameGridCellCount - gameGridWidth) {
+  //      gameGridCells[i].classList.add('block')
+  //      const innerCell = document.createElement('div')
+  //      innerCell.classList.add('grey')
+  //      gameGridCells[i].appendChild(innerCell)
+  //    }
+  //  }
+  //}
+  //generateGrid()
 
 
 
   //TETROMINOS
   class Tetromino {                                                      
-    constructor(layout = [], rotation = 0, cellPositions = [], TLSpawnPosition = newTetrominoSpawnCell, colour = ''){
+    constructor(name, layout = [], colour = ''){
+      this.name = name
       this.layout = layout
-      this.rotation = rotation
-      this.cellPositions = cellPositions
-      this.TLSpawnPosition = TLSpawnPosition
+      this.rotation = 0
+      this.cellPositions = []
+      this.TLSpawnPosition = gameGrid.newTetrominoSpawnCell //will maybe need to change this to bottom position of 
       this.colour = colour
     }
-    spawn() {
+    spawn(grid) {
       let cellRender = this.TLSpawnPosition
       for (let i = 0; i < this.layout.length; i++){
         for (let j = 0; j < this.layout.length; j++){
           if (this.layout[i][j] === 1){
-            gameGridCells[cellRender].classList.add('block')
+            grid.cells[cellRender].classList.add('block')
             this.cellPositions.push(cellRender) //can maybe tidy up a bit??
             const innerCell = document.createElement('div')
             innerCell.classList.add(this.colour)
-            gameGridCells[cellRender].appendChild(innerCell)
+            grid.cells[cellRender].appendChild(innerCell)
           }        
           cellRender ++
         }
-        cellRender += (gameGridWidth - this.layout.length)
+        cellRender += (grid.width - this.layout.length)
       }
     }
-    despawn(){
+    despawn(grid){
       this.cellPositions = []
       let cellRender = this.TLSpawnPosition
       for (let i = 0; i < this.layout.length; i++){
         for (let j = 0; j < this.layout.length; j++){
           if (this.layout[i][j] === 1){ 
-            gameGridCells[cellRender].classList.remove('block')
-            gameGridCells[cellRender].removeChild(gameGridCells[cellRender].childNodes[0])
+            grid.cells[cellRender].classList.remove('block')
+            grid.cells[cellRender].removeChild(grid.cells[cellRender].childNodes[0])
           }
           cellRender ++
         }
-        cellRender += (gameGridWidth - this.layout.length)
+        cellRender += (grid.width - this.layout.length)
       }
     }
   }
@@ -80,21 +118,33 @@ function init() {
 
 
   //TETROMINO TYPES
-  const ITetromino = new Tetromino([[0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0]], 0, [], newTetrominoSpawnCell, 'lightBlue')
-  const OTetromino = new Tetromino([[1, 1],[1, 1]], 0, [], newTetrominoSpawnCell, 'yellow')
-  const TTetromino = new Tetromino([[1, 1, 1], [0, 1, 0], [0, 0, 0]], 0, [], newTetrominoSpawnCell, 'purple')
-  const JTetromino = new Tetromino([[0, 1, 0], [0, 1, 0], [1, 1, 0]], 0, [], newTetrominoSpawnCell, 'darkBlue')
-  const LTetromino = new Tetromino([[0, 1, 0], [0, 1, 0], [0, 1, 1]], 0, [], newTetrominoSpawnCell, 'orange')
-  const STetromino = new Tetromino([[0, 1, 1], [1, 1, 0], [0, 0, 0]], 0, [], newTetrominoSpawnCell, 'green')
-  const ZTetromino = new Tetromino([[1, 1, 0], [0, 1, 1], [0, 0, 0]], 0, [], newTetrominoSpawnCell, 'red')
+  const ITetromino = new Tetromino('I Tetromino', [[0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0]], 'lightBlue')
+  const OTetromino = new Tetromino('O Tetromino', [[1, 1],[1, 1]], 'yellow')
+  const TTetromino = new Tetromino('T Tetromino', [[1, 1, 1], [0, 1, 0], [0, 0, 0]], 'purple')
+  const JTetromino = new Tetromino('J Tetromino', [[0, 1, 0], [0, 1, 0], [1, 1, 0]], 'darkBlue')
+  const LTetromino = new Tetromino('L Tetromino', [[0, 1, 0], [0, 1, 0], [0, 1, 1]], 'orange')
+  const STetromino = new Tetromino('S Tetromino', [[0, 1, 1], [1, 1, 0], [0, 0, 0]], 'green')
+  const ZTetromino = new Tetromino('Z Tetromino', [[1, 1, 0], [0, 1, 1], [0, 0, 0]], 'red')
 
-  const tetrominoTypes = [ITetromino, OTetromino, TTetromino, JTetromino, LTetromino, STetromino, ZTetromino]
-  function randomTetromino(){
-    return tetrominoTypes[Math.floor(Math.random() * tetrominoTypes.length)]
+  const tetrominoTypes = [ITetromino, OTetromino, TTetromino, JTetromino, LTetromino, STetromino, ZTetromino] 
+  //function randomTetromino(){
+  //  return tetrominoTypes[Math.floor(Math.random() * tetrominoTypes.length)]
+  //}
+  function randomTetromino(name){
+    const randomTetrominoType = tetrominoTypes[Math.floor(Math.random() * tetrominoTypes.length)]
+    return new Tetromino(name, randomTetrominoType.layout, randomTetrominoType.colour)
   }
   
+  //const test = new Tetromino('test', randomTetromino().layout, randomTetromino().colour)
+
+  //const test = randomTetromino('test')
+  //const test = randomTetromino('test')
+  //test.spawn(gameGrid)
+
+
+  
   //TETROMINO QUEUE   -make display -havng issues with swap and next- need to visualise it. 
-  const tetrominoQueue = [randomTetromino(), randomTetromino(), randomTetromino(), randomTetromino()]
+  //const tetrominoQueue = [randomTetromino(), randomTetromino(), randomTetromino(), randomTetromino()] //look at
   //display
   //const nextTetrominoGrid = document.querySelector('.game-grid')
   //const nextGridWidth = 10
@@ -124,10 +174,14 @@ function init() {
   //generateGrid()
 
   //IN-PLAY TETROMINO
-  const activeTetromino = new Tetromino(randomTetromino().layout, 0, [], newTetrominoSpawnCell, randomTetromino().colour) //can this be done better? 
-  const nextPosition = new Tetromino(activeTetromino.layout, 0, [], newTetrominoSpawnCell, activeTetromino.colour)
-  const tetrominoShadow = new Tetromino()
-  //tetrominoShadow.colour = 'grey'
+  const activeTetromino = randomTetromino('Active Tetromino')
+  const nextPosition = new Tetromino('Next Position', activeTetromino.layout, activeTetromino.colour)
+  const tetrominoShadow = new Tetromino('Tetromino Shadow', activeTetromino.layout, 'grey')
+
+  //test
+  activeTetromino.spawn(gameGrid)
+  nextPosition.spawn(qGrid)
+  
 
   
   //MOVEMENT
@@ -136,24 +190,23 @@ function init() {
     let cellCheck = nextPosition.TLSpawnPosition
     for (let i = 0; i < nextPosition.layout.length; i++){
       for (let j = 0; j < nextPosition.layout.length; j++){
-        if (nextPosition.layout[i][j] === 1 && gameGridCells[cellCheck].classList.contains('block')){
+        if (nextPosition.layout[i][j] === 1 && gameGrid.cells[cellCheck].classList.contains('block')){
           clashCheckArray.push('clash')
         }        
         cellCheck ++
       }
-      cellCheck += (gameGridWidth - activeTetromino.layout.length)//should this be next??
+      cellCheck += (gameGrid.width - nextPosition.layout.length)//should this be next??
     }
     return !clashCheckArray.some(cell => cell === 'clash')
   }
 
   function movement(movement){
-    activeTetromino.despawn()
-    //
+    activeTetromino.despawn(gameGrid)
     nextPosition.TLSpawnPosition = activeTetromino.TLSpawnPosition
     nextPosition.layout = activeTetromino.layout
-    nextPosition.colour = activeTetromino.colour
+    nextPosition.colour = activeTetromino.colour //can i do this all at once? 
     if (movement === 'move down'){
-      nextPosition.TLSpawnPosition = activeTetromino.TLSpawnPosition + gameGridWidth
+      nextPosition.TLSpawnPosition = activeTetromino.TLSpawnPosition + gameGrid.width
       //nextPosition.layout = activeTetromino.layout
     } else if (movement === 'move left'){
       nextPosition.TLSpawnPosition = activeTetromino.TLSpawnPosition - 1
@@ -164,7 +217,7 @@ function init() {
     } else if (movement === 'rotate'){
       //nextPosition.TLSpawnPosition = activeTetromino.TLSpawnPosition
       nextPosition.layout = []
-      for (let i = 0; i < activeTetromino.layout.length; i++) { // add a while loop that moves over if block class is 
+      for (let i = 0; i < activeTetromino.layout.length; i++) { // add a while loop that moves over if block class is can incorporate rotate value? 
         nextPosition.layout.push([])
         for (let j = 0; j < activeTetromino.layout.length; j++) {
           nextPosition.layout[i].unshift(activeTetromino.layout[j][i])
@@ -182,10 +235,10 @@ function init() {
       activeTetromino.colour = nextPosition.colour 
     } else { 
       if (movement === 'move down') { //--TETROMINO LANDING--
-        activeTetromino.spawn()
-        clearedLine() 
+        activeTetromino.spawn(gameGrid)
+        //clearedLine() 
         //gameOver()
-        activeTetromino.layout = tetrominoQueue[0].layout
+        activeTetromino.layout = tetrominoQueue[0].layout //swap?
         activeTetromino.colour = tetrominoQueue[0].colour
         activeTetromino.TLSpawnPosition = newTetrominoSpawnCell
         //activeTetromino = tetrominoQueue[0] 
@@ -193,10 +246,11 @@ function init() {
         tetrominoQueue.shift()
       }
     }
-    activeTetromino.spawn()
+    activeTetromino.spawn(gameGrid)
   }
 
   //GAME MECHANICS
+  //clearing lines
   function clearedLine() {
     let clearedLineCounter = 0
     const tetrominoLineNumbers = activeTetromino.cellPositions.map(cell => Math.floor(cell / gameGridWidth))
@@ -230,8 +284,16 @@ function init() {
       }
     }
   }
-  
 
+  //gravity
+  let gameLoopIntervalTime = 1000 * 1
+  function gravity() {
+    setInterval(() => {
+      movement('move down')
+    }, gameLoopIntervalTime)
+  }
+  
+  
 
   //CONTROL BOARD
   function handleKeyDown(e) {
@@ -258,19 +320,14 @@ function init() {
 
 
 
-  //GAME LOOP
-  function gameLoop() {
-    setInterval(() => {
-      movement('move down')
-    }, gameLoopIntervalTime)
-  }
+
 
 
 
 
   //TEST
-  activeTetromino.spawn()
-  gameLoop()
+  //activeTetromino.spawn(gameGrid)
+  //gravity()
 
 
 
