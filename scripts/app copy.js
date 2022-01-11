@@ -5,68 +5,63 @@ function init() {
   //time
   
 
-  //SETTING THE GRID//
+  //SETTING THE GRID & ADD/REMOVE FUNCTIONS//
   class Grid{
-    constructor(grid, width, height, newTetrominoSpawnCell){
-      this.grid = grid
+    constructor(div, width, height, newTetrominoSpawnCell, fullBorder){
+      this.div = div
       this.width = width
       this.height = height
       this.cellCount = this.width * this.height
       this.cells = []
       this.newTetrominoSpawnCell = newTetrominoSpawnCell
-      this.changeCells = []
+      this.cellsToChange = []
+      this.fullBorder = fullBorder
     }
     generateGrid(){
       for (let i = 0; i < this.cellCount; i++){
         const cell = document.createElement('div')
         cell.style.width = `${100 / this.width}%`//will need to play about with width and height to make it responsive
         cell.style.height = `${100 / this.height}%`
-        this.grid.appendChild(cell)
+        this.div.appendChild(cell)
         this.cells.push(cell)  
       }
-    }
-    addBlocks(colour){
-      for (let i = 0; i < this.changeCells.length; i++){
-        this.cells[this.changeCells[i]].classList.add('block')
-        const innerCell = document.createElement('div')
-        innerCell.classList.add(colour)
-        this.cells[this.changeCells[i]].appendChild(innerCell)
-      }
-    }
-    generateGameBorder(){ 
-      for (let i = 0; i < this.cellCount; i++){
-        this.changeCells = [] 
-        if (i % this.width === 0 || i % this.width === this.width - 1 || i > this.cellCount - this.width) {
-          //this.cells[i].classList.add('block')
-          //const innerCell = document.createElement('div')
-          //innerCell.classList.add('grey')
-          //this.cells[i].appendChild(innerCell)
-          this.changeCells.push[i]
-        } 
-      }
+      this.generateBorder()
       this.addBlocks('grey')
     }
-
-    generateFullBorder(){
+    addBlocks(colour){
+      for (let i = 0; i < this.cellsToChange.length; i++){
+        this.cells[this.cellsToChange[i]].classList.add('block')
+        const innerCell = document.createElement('div')
+        innerCell.classList.add(colour)
+        this.cells[this.cellsToChange[i]].appendChild(innerCell)
+      }
+      this.cellsToChange = [] 
+    }
+    removeBlocks(){
+      for (let i = 0; i < this.cellsToChange.length; i++){
+        this.cells[this.cellsToChange[i]].classList.remove('block')
+        this.cells[this.cellsToChange[i]].removeChild(this.cells[this.cellsToChange[i]].childNodes[0])
+      }
+      this.cellsToChange = []
+    }
+    generateBorder(){ 
       for (let i = 0; i < this.cellCount; i++){
-        if (i < this.width || i % this.width === 0 || i % this.width === this.width - 1 || i > this.cellCount - this.width) {
-          this.cells[i].classList.add('block')
-          const innerCell = document.createElement('div')
-          innerCell.classList.add('grey')
-          this.cells[i].appendChild(innerCell)
+        if (i % this.width === 0 || i % this.width === this.width - 1 || i > this.cellCount - this.width){
+          this.cellsToChange.push(i)
+        } else if (this.fullBorder === true && i < this.width){
+          this.cellsToChange.push(i)
         }
       }
+      console.log(this.cellsToChange)
     }
   }
   const gameGrid  = new Grid(document.querySelector('.game-grid'), 12, 21, 5)
   gameGrid.generateGrid()
-  gameGrid.generateGameBorder()
-  const qGrid  = new Grid(document.querySelector('.tetromino-queue'), 10, 6, 5)
+  const qGrid  = new Grid(document.querySelector('.tetromino-queue'), 10, 6, 5, true)
   qGrid.generateGrid()
-  qGrid.generateFullBorder()
-  const holdGrid  = new Grid(document.querySelector('.tetromino-hold'), 10, 6, 5)
+  const holdGrid  = new Grid(document.querySelector('.tetromino-hold'), 10, 6, 5, true)
   holdGrid.generateGrid()
-  holdGrid.generateFullBorder()
+  
 
 
 
@@ -86,7 +81,7 @@ function init() {
     }
   }
     
-  addBlocks(gameGrid, [1, 2, 5, 7, 8, 220], 'grey')
+  //addBlocks(gameGrid, [1, 2, 5, 7, 8, 220], 'grey')
   //removeBlocks(gameGrid, [1, 2])
 
 
