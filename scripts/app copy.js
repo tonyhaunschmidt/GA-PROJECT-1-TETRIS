@@ -121,7 +121,18 @@ function init() {
   //IN-PLAY TETROMINO//
   const activeTetromino = randomTetromino('Active Tetromino')
   const nextPosition = new Tetromino('Next Position', activeTetromino.layout, activeTetromino.colour)
+
+  //TETROMINO SHADOW//
   const tetrominoShadow = new Tetromino('Tetromino Shadow', activeTetromino.layout, 'grey')
+  function castShadow(){  
+    tetrominoShadow.despawn(gameGrid)
+    tetrominoShadow.layout = activeTetromino.layout  
+    tetrominoShadow.TLSpawnPosition = activeTetromino.TLSpawnPosition
+    while (!movementCheck(tetrominoShadow)){
+      tetrominoShadow.TLSpawnPosition -= gameGrid.width
+    }
+    tetrominoShadow.spawn(gameGrid)
+  }
   
 
   //TETROMINO QUEUE//   -have a look at refactoring 
@@ -143,28 +154,22 @@ function init() {
     queuedTetrominoTwo.spawn(qGrid)
   }
 
-  //TETROMINO ON HOLD
+  //TETROMINO ON HOLD//
   const tetrominoHeld = new Tetromino('Tetromino on Hold') 
   tetrominoHeld.TLSpawnPosition = holdGrid.width + 4
   
-
-  //test
-  
-  
-
-  
-  //MOVEMENT
-  function movementCheck(){
+  //MOVEMENT//
+  function movementCheck(NextPositionOrShadow){ //changed nextPositoon to nextPositonOrShadow to help shadow function- return if not used. 
     const clashCheckArray = []
-    let cellCheck = nextPosition.TLSpawnPosition
-    for (let i = 0; i < nextPosition.layout.length; i++){
-      for (let j = 0; j < nextPosition.layout.length; j++){
-        if (nextPosition.layout[i][j] === 1 && gameGrid.cells[cellCheck].classList.contains('block')){
+    let cellCheck = NextPositionOrShadow.TLSpawnPosition
+    for (let i = 0; i < NextPositionOrShadow.layout.length; i++){
+      for (let j = 0; j < NextPositionOrShadow.layout.length; j++){
+        if (NextPositionOrShadow.layout[i][j] === 1 && gameGrid.cells[cellCheck].classList.contains('block')){
           clashCheckArray.push('clash')
         }        
         cellCheck ++
       }
-      cellCheck += (gameGrid.width - nextPosition.layout.length)//should this be next??
+      cellCheck += (gameGrid.width - nextPosition.layout.length)
     }
     return !clashCheckArray.some(cell => cell === 'clash')
   }
@@ -176,15 +181,11 @@ function init() {
     nextPosition.colour = activeTetromino.colour //can i do this all at once? 
     if (movement === 'move down'){
       nextPosition.TLSpawnPosition = activeTetromino.TLSpawnPosition + gameGrid.width
-      //nextPosition.layout = activeTetromino.layout
     } else if (movement === 'move left'){
       nextPosition.TLSpawnPosition = activeTetromino.TLSpawnPosition - 1
-      //nextPosition.layout = activeTetromino.layout
     } else if (movement === 'move right'){
       nextPosition.TLSpawnPosition = activeTetromino.TLSpawnPosition + 1
-      //nextPosition.layout = activeTetromino.layout
     } else if (movement === 'rotate'){
-      //nextPosition.TLSpawnPosition = activeTetromino.TLSpawnPosition
       nextPosition.layout = []
       for (let i = 0; i < activeTetromino.layout.length; i++) { // add a while loop that moves over if block class is can incorporate rotate value? 
         nextPosition.layout.push([])
@@ -202,7 +203,7 @@ function init() {
         nextPosition.colour = tetrominoHeld.colour
       }
     }
-    if (movementCheck()){
+    if (movementCheck(nextPosition)){
       if (movement === 'swap'){
         tetrominoHeld.despawn(holdGrid)
         tetrominoHeld.layout = activeTetromino.layout
@@ -225,6 +226,7 @@ function init() {
       } 
     }
     activeTetromino.spawn(gameGrid)
+    //castShadow()
   }
 
   //GAME MECHANICS

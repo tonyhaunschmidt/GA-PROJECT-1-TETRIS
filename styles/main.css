@@ -3,6 +3,7 @@
 main {
   display: flex;
   flex-wrap: wrap;
+  text-align: center;
 }
 .game-grid {
   border: 1px solid black;
@@ -28,7 +29,7 @@ main {
 }
 
 .game-grid div {
-  /*background-color: red;*/
+  
 
 }
 
