@@ -279,7 +279,7 @@ function init() {
     } else { 
       if (movement === 'move down') { //--TETROMINO LANDING--
         activeTetromino.spawn(gameGrid)
-        //clearedLine() 
+        clearedLine() 
         //gameOver()
         activeTetromino.layout = queuedTetrominoOne.layout
         activeTetromino.colour = queuedTetrominoOne.colour
@@ -296,29 +296,29 @@ function init() {
   //clearing lines
   function clearedLine() {
     let clearedLineCounter = 0
-    const tetrominoLineNumbers = activeTetromino.cellPositions.map(cell => Math.floor(cell / gameGridWidth))
+    const tetrominoLineNumbers = activeTetromino.cellPositions.map(cell => Math.floor(cell / gameGrid.width))
     for (let i = 0; i < tetrominoLineNumbers.length; i++){
       const lineArray = [[], []]
-      for (let j = 1; j < gameGridWidth - 1; j++){
-        lineArray[0].push((gameGridWidth * tetrominoLineNumbers[i]) + j)
-        lineArray[1].push(gameGridCells[(gameGridWidth * tetrominoLineNumbers[i]) + j].classList.contains('block'))
+      for (let j = 1; j < gameGrid.width - 1; j++){
+        lineArray[0].push((gameGrid.width * tetrominoLineNumbers[i]) + j)
+        lineArray[1].push(gameGrid.cells[(gameGrid.width * tetrominoLineNumbers[i]) + j].classList.contains('block'))
       }
       if (lineArray[1].every(cell => cell === true)){ //--CLEARED LINE--
         for (let j = 0; j < lineArray[0].length; j++){
-          gameGridCells[lineArray[0][j]].classList.remove('block') 
-          gameGridCells[lineArray[0][j]].removeChild(gameGridCells[lineArray[0][j]].childNodes[0])
+          gameGrid.cells[lineArray[0][j]].classList.remove('block') 
+          gameGrid.cells[lineArray[0][j]].removeChild(gameGrid.cells[lineArray[0][j]].childNodes[0])
         }
         clearedLineCounter ++
-        for (let j = tetrominoLineNumbers[i] * gameGridWidth; j >= 0; j--){ //--DROPPING THE BLOCKS--
-          if (j % gameGridWidth !== 0 && j % gameGridWidth !== gameGridWidth - 1 && gameGridCells[j].classList.contains('block')){
-            gameGridCells[j].classList.remove('block')
-            const colour = gameGridCells[j].childNodes[0].classList
-            gameGridCells[j].removeChild(gameGridCells[j].childNodes[0])
+        for (let j = tetrominoLineNumbers[i] * gameGrid.width; j >= 0; j--){ //--DROPPING THE BLOCKS--
+          if (j % gameGrid.width !== 0 && j % gameGrid.width !== gameGrid.width - 1 && gameGrid.cells[j].classList.contains('block')){
+            gameGrid.cells[j].classList.remove('block')
+            const colour = gameGrid.cells[j].childNodes[0].classList
+            gameGrid.cells[j].removeChild(gameGrid.cells[j].childNodes[0])
             //add animation?? - on and off class with delay. 
-            gameGridCells[j + gameGridWidth].classList.add('block')
+            gameGrid.cells[j + gameGrid.width].classList.add('block')
             const innerCell = document.createElement('div')
             innerCell.classList.add(colour)
-            gameGridCells[j + gameGridWidth].appendChild(innerCell)
+            gameGrid.cells[j + gameGrid.width].appendChild(innerCell)
           }
         }
       }
