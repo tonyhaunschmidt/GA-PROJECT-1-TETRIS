@@ -5,7 +5,7 @@ function init() {
   //time
   
 
-  //SETTING THE GRID & ADD/REMOVE FUNCTIONS//
+  //SETTING THE GRIDS & ADD/REMOVE BLOCK METHODS//
   class Grid{
     constructor(div, width, height, newTetrominoSpawnCell, fullBorder){
       this.div = div
@@ -52,7 +52,6 @@ function init() {
           this.cellsToChange.push(i)
         }
       }
-      console.log(this.cellsToChange)
     }
   }
   const gameGrid  = new Grid(document.querySelector('.game-grid'), 12, 21, 5)
@@ -66,28 +65,29 @@ function init() {
 
 
   //ADDING AND REMOVING BLOCK CELLS//
-  function addBlocks(grid, cellArray = [], colour){
-    for (let i = 0; i < cellArray.length; i++){
-      grid.cells[cellArray[i]].classList.add('block')
-      const innerCell = document.createElement('div')
-      innerCell.classList.add(colour)
-      grid.cells[cellArray[i]].appendChild(innerCell)
-    }
-  }
-  function removeBlocks(grid, cellArray = []){
-    for (let i = 0; i < cellArray.length; i++){
-      grid.cells[cellArray[i]].classList.remove('block')
-      grid.cells[cellArray[i]].removeChild(grid.cells[cellArray[i]].childNodes[0])
-    }
-  }
+  //function addBlocks(grid, cellArray = [], colour){
+  //  for (let i = 0; i < cellArray.length; i++){
+  //    grid.cells[cellArray[i]].classList.add('block')
+  //    const innerCell = document.createElement('div')
+  //    innerCell.classList.add(colour)
+  //    grid.cells[cellArray[i]].appendChild(innerCell)
+  //  }
+  //}
+  //function removeBlocks(grid, cellArray = []){
+  //  for (let i = 0; i < cellArray.length; i++){
+  //    grid.cells[cellArray[i]].classList.remove('block')
+  //    grid.cells[cellArray[i]].removeChild(grid.cells[cellArray[i]].childNodes[0])
+  //  }
+  //}
     
   //addBlocks(gameGrid, [1, 2, 5, 7, 8, 220], 'grey')
   //removeBlocks(gameGrid, [1, 2])
 
+  
 
   //TETROMINOES//
   class Tetromino {                                                      
-    constructor(name, layout = [], colour = ''){
+    constructor(name, layout = [], colour){
       this.name = name
       this.layout = layout
       this.rotation = 0 //DO I NEED THIS??
@@ -95,40 +95,59 @@ function init() {
       this.TLSpawnPosition = gameGrid.newTetrominoSpawnCell //will maybe need to change this to bottom position of qgrid// DO I NEED THIS? 
       this.colour = colour
     }
-
-    //updatecellposition()
-    //spawn {updateCellPosition(), for each cell in cell positon ...}
-    //despawn " " " "
-    spawn(grid) {
+    updateCellPositions(grid){
+      this.cellPositions = []
       let cellRender = this.TLSpawnPosition
       for (let i = 0; i < this.layout.length; i++){
         for (let j = 0; j < this.layout.length; j++){
           if (this.layout[i][j] === 1){
-            grid.cells[cellRender].classList.add('block')
-            this.cellPositions.push(cellRender) //can maybe tidy up a bit??
-            const innerCell = document.createElement('div')
-            innerCell.classList.add(this.colour)
-            grid.cells[cellRender].appendChild(innerCell)
+            this.cellPositions.push(cellRender)
           }        
           cellRender ++
         }
         cellRender += (grid.width - this.layout.length)
       }
     }
-    despawn(grid){
-      this.cellPositions = [] //if refactor- move to end i.e. updatecellposition(), remove classes, CP=[]
-      let cellRender = this.TLSpawnPosition
-      for (let i = 0; i < this.layout.length; i++){
-        for (let j = 0; j < this.layout.length; j++){
-          if (this.layout[i][j] === 1){ 
-            grid.cells[cellRender].classList.remove('block')
-            grid.cells[cellRender].removeChild(grid.cells[cellRender].childNodes[0])
-          }
-          cellRender ++
-        }
-        cellRender += (grid.width - this.layout.length)
-      }
+    spawn(grid) {
+      this.updateCellPositions(grid)
+      grid.cellsToChange = this.cellPositions
+      grid.addBlocks(this.colour)
     }
+    despawn(grid) {
+      this.updateCellPositions(grid)
+      grid.cellsToChange = this.cellPositions
+      grid.removeBlocks()
+    }
+    //spawn(grid) {
+    //  let cellRender = this.TLSpawnPosition
+    //  for (let i = 0; i < this.layout.length; i++){
+    //    for (let j = 0; j < this.layout.length; j++){
+    //      if (this.layout[i][j] === 1){
+    //        grid.cells[cellRender].classList.add('block')
+    //        this.cellPositions.push(cellRender) //can maybe tidy up a bit??
+    //        const innerCell = document.createElement('div')
+    //        innerCell.classList.add(this.colour)
+    //        grid.cells[cellRender].appendChild(innerCell)
+    //      }        
+    //      cellRender ++
+    //    }
+    //    cellRender += (grid.width - this.layout.length)
+    //  }
+    //}
+    //despawn(grid){
+    //  this.cellPositions = [] //if refactor- move to end i.e. updatecellposition(), remove classes, CP=[]
+    //  let cellRender = this.TLSpawnPosition
+    //  for (let i = 0; i < this.layout.length; i++){
+    //    for (let j = 0; j < this.layout.length; j++){
+    //      if (this.layout[i][j] === 1){ 
+    //        grid.cells[cellRender].classList.remove('block')
+    //        grid.cells[cellRender].removeChild(grid.cells[cellRender].childNodes[0])
+    //      }
+    //      cellRender ++
+    //    }
+    //    cellRender += (grid.width - this.layout.length)
+    //  }
+    //}
   }
 
 
