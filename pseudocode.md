@@ -20,13 +20,27 @@ make Grid (function):
 
 
 define tetromino arrays:
-ITetromino = [[0, 0, 0, 0], [1, 1, 1, 1], [0, 0, 0, 0], [0, 0, 0, 0]]
-OTetromino = [[1, 1],[1, 1]]
-TTetromino = [[1, 1, 1], [0, 1, 0], [0, 0, 0]]
-JTetromino = [[0, 1, 0], [0, 1, 0], [1, 1, 0]]
-LTetromino = [[0, 1, 0], [0, 1, 0], [0, 1, 1]]
-STetromino = [[0, 1, 1], [1, 1, 0], [0, 0, 0]]
-ZTetromino = [[1, 1, 0], [0, 1, 1], [0, 0, 0]]
+ITetromino =  [[0, 0, 0, 0], 
+              [1, 1, 1, 1], 
+              [0, 0, 0, 0], 
+              [0, 0, 0, 0]]
+OTetromino =  [[1, 1],
+              [1, 1]]
+TTetromino =  [[1, 1, 1], 
+              [0, 1, 0], 
+              [0, 0, 0]]
+JTetromino =  [[0, 1, 0], 
+              [0, 1, 0], 
+              [1, 1, 0]]
+LTetromino =  [[0, 1, 0], 
+              [0, 1, 0], 
+              [0, 1, 1]]
+STetromino = [[0, 1, 1], 
+              [1, 1, 0], 
+              [0, 0, 0]]
+ZTetromino = [[1, 1, 0], 
+              [0, 1, 1], 
+              [0, 0, 0]]
 
 Tetrominoes = [ITetromino, OTetromino, TTetromino, JTetromino, LTetromino, STetromino, ZTetromino]
 
