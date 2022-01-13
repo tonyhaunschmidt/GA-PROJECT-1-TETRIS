@@ -2,7 +2,7 @@ function init() {
 
   //GAME STATS  -make this object??
   //score
-  //time
+  let gameLoopIntervalTime = 1000 * 1
 
 
   //SETTING THE GRIDS//
@@ -203,6 +203,7 @@ function init() {
         this.current.TLSpawnPosition = this.current.grid.newTetrominoSpawnCell
         //this.next.TLSpawnPosition = this.current.TLSpawnPosition
         this.adopt(this.nextTetOne)
+        this.nextInQueue()
         
 
       } else {
@@ -268,7 +269,7 @@ function init() {
         }
       }
     }
-    swap(tetromino){ // not quite working? also needs to add check parameters
+    swap(tetromino){ // add replace/swap movement check
       this.despawn()
       tetromino.despawn()
       tetromino.next.name = this.current.name
@@ -286,7 +287,7 @@ function init() {
       this.spawnNew()
       tetromino.spawnNew()
     }
-    adopt(tetromino, despawn){ // not quite working? also needs to add check parameters
+    adopt(tetromino, despawn){ // add replace/swap movement check
       if (despawn === 'despawn'){
         this.despawn()
       }
@@ -341,59 +342,13 @@ function init() {
       this.blocked = false
       //console.log(this.current)
     }
+    nextInQueue(){
+      this.nextTetOne.adopt(this.nextTetTwo, 'despawn')
+    }
   }
-    //rotationAndSwapCheck(movement){
-    //  console.log(this.blocked)
-    //  console.log(movement === 'rotate' || movement === 'swap')
-    //  console.log(this.next.rotation)
-    //  console.log(this.next.rotation === 3)
-
-    //  if (this.blocked === true && (movement === 'rotate' || movement === 'swap') && this.current.rotation === 3){ //and rotate position
-    //    this.next.cellPositions = this.current.cellPositions.map(cell => cell - (this.current.grid.width * 1) - 1)
-    //    this.TLSpawnPosition = this.TLSpawnPosition - (this.current.grid.width * 1) - 1
-    //    this.movementCheck()
-    //    console.log('second check after movements')
-    //  } else {
-    //    //console.log('blocked')
-    //    //console.log(this.blocked)
-    //    this.next.cellPositions = this.current.cellPositions
-    //    this.next.rotation = this.current.rotation
-    //    this.next.layout = this.current.layout
-    //    this.next.colour = this.current.colour
-    //    this.next.name = this.current.name
-    //    this.next.TLSpawnPosition = this.current.TLSpawnPosition
-    
-        //console.log(this.current.TLSpawnPosition)
-        //console.log(this.next.TLSpawnPosition)
-        //console.log(this.current.rotation)
-      
-    
 
       
-
-
     
-    
-      
-    
-    //adopt(tetromino, layout, rotation, cellPositions, TLSpawnPosition, colour){
-    //  if (layout === true){
-    //    this.layout = tetromino.layout
-    //  }
-    //  if (rotation === true){
-    //    this.rotation = tetromino.rotation
-    //  }
-    //  if (cellPositions === true){
-    //    this.cellPositions = tetromino.cellPositions
-    //  }
-    //  if (TLSpawnPosition === true){
-    //    this.TLSpawnPosition = tetromino.TLSpawnPosition
-    //  }
-    //  if (colour === true){
-    //    this.colour = tetromino.colour
-    //  }
-    //}
-
 
   //TETROMINO TYPES//
   const ITetromino = new Tetromino('I Tetromino', [[0, 0, 0, 0], [0, 0, 0, 0], [1, 1, 1, 1], [0, 0, 0, 0]], 'lightBlue', gameGrid)// can maybe get rid of name for all tetrominoes objects
@@ -406,66 +361,46 @@ function init() {
 
   const tetrominoTypes = [ITetromino, OTetromino, TTetromino, JTetromino, LTetromino, STetromino, ZTetromino] 
   
+  //TETROMINO RANDOMS
   function randomTetromino(grid, nextTetOne, nextTetTwo, heldTet){
     const randomTetrominoType = tetrominoTypes[Math.floor(Math.random() * tetrominoTypes.length)]
     return new Tetromino(randomTetrominoType.current.name, randomTetrominoType.current.layout, randomTetrominoType.current.colour, grid, nextTetOne, nextTetTwo, heldTet)
   }
-  
+
+  function randomiseTetromino(tetromino) {
+    const random = randomTetromino(tetromino.current.grid)
+    tetromino.current.name = random.current.name
+    tetromino.current.layout = random.current.layout
+    tetromino.current.colour = random.current.colour
+  }
   
 
-  
   //TETROMINO QUEUE//   -have a look at refactoring 
   const queuedTetrominoOne = randomTetromino(qGrid)
-  ///queuedTetrominoOne.TLSpawnPosition = qGrid.width + 2//these especially will need refactoring for change size of screen
   const queuedTetrominoTwo = randomTetromino(qGrid)
-  //queuedTetrominoTwo.TLSpawnPosition = qGrid.width + 6
-  //queuedTetrominoOne.spawn(qGrid)
-  //queuedTetrominoTwo.spawn(qGrid)
   
-  //function nextInQueue(){
-  //  queuedTetrominoOne.despawn(qGrid) 
-  //  queuedTetrominoTwo.despawn(qGrid)
-  //  queuedTetrominoOne.adopt(queuedTetrominoTwo, true, false, false, false, true)
-  //  const queuedTetrominoThree = randomTetromino('Queued Tetromino 3')
-  //  queuedTetrominoTwo.adopt(queuedTetrominoThree, true, false, false, false, true)
-  //  queuedTetrominoOne.spawn(qGrid)
-  //  queuedTetrominoTwo.spawn(qGrid)
-  //}
-
   //TETROMINO ON HOLD//
   const tetrominoHeld = new Tetromino('', [], '', holdGrid) 
   //tetrominoHeld.TLSpawnPosition = holdGrid.width + 4 // can this be better? having to set spawn position after creating
   
-
   //IN-PLAY TETROMINO//
   const activeTetromino = randomTetromino(gameGrid, queuedTetrominoOne, queuedTetrominoTwo, tetrominoHeld)
 
  
-  
- 
-
 
   //FUNCTIONS & GAMEPLAY
-  let gameLoopIntervalTime = 1000 * 1 //put this at the top //maybe move else where?
-
   function gravity() {
     setInterval(() => {
       activeTetromino.move('down')
+      randomiseTetromino(queuedTetrominoTwo)
     }, gameLoopIntervalTime)
-  }
-
-  function landed(activeTet, nextTetOne, nextTetTwo){
-    activeTet.adopt(nextTetOne)
-    nextInQueue(nextTetOne, nextTetTwo)
-    //activeTet.current.grid.gameOver()
-    activeTet.current.grid.clearLine()
   }
 
   function holdTetromino(activeTet, nextTetOne, nextTetTwo, holdTet){
     if (holdTet.current.name === ''){
       holdTet.adopt(activeTet, 'despawn')
       activeTet.adopt(nextTetOne, 'despawn')
-      nextInQueue(nextTetOne, nextTetTwo)
+      activeTetromino.nextInQueue()
     } else {
       activeTet.swap(holdTet)
     }
@@ -515,6 +450,7 @@ function init() {
       activeTetromino.move('down')
     } else if (key === space){
       holdTetromino(activeTetromino, queuedTetrominoOne, queuedTetrominoTwo, tetrominoHeld)
+      
     } 
   }
   document.addEventListener('keydown', handleKeyDown)
