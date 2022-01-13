@@ -36,3 +36,5 @@ const steffi = new Person('steffi', 27)
 tony.logName()
 tony.stealName()
 tony.logName()
+
+console.log((0+1 % 4)
