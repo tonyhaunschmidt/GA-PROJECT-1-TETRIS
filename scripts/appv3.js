@@ -1,15 +1,62 @@
 function init() {
 
-  //GAME STATS//  -make this object??
-  //score
-  //level
+  //GAME STATS//
   let gameLoopIntervalTime = 1000 * 1
+
+  const playerOne = {
+    score: 0,
+    level: 0,
+    linesCleared: [],
+    comboCount: 0,
+  }
+
+  function updateScore(player){
+    if (player.linesCleared[0] === 4){
+      player.score += (800 * (player.level + 1))
+      player.comboCount += 1
+    } else if (player.linesCleared[0] === 3){
+      player.score += (500 * (player.level + 1))
+      player.comboCount += 1
+    } else if (player.linesCleared[0] === 2){
+      player.score += (300 * (player.level + 1))
+      player.comboCount += 1
+    } else if (player.linesCleared[0] === 1){
+      player.score += (100 * (player.level + 1))
+      player.comboCount += 1
+    } else if (player.linesCleared[0] === 0){
+      if (player.comboCount > 1){
+        player.score += (50 * (player.comboCount - 1) * (player.level + 1))
+      }
+      player.comboCount = 0
+    }
+    currentLevel(player)
+    console.log(player.score)
+    console.log(player.level)
+  }
+
+  const levelBrackets = [10, 30, 60, 100, 150, 210, 280, 360, 450, 550, 650, 750, 850]
+
+  function currentLevel(player){
+    const totalLinesCleared = player.linesCleared.reduce((sum, lines) => sum + lines, 0)
+    for (let i = 0; i < levelBrackets.length; i++){
+      if (totalLinesCleared > levelBrackets[i]){
+        console.log(totalLinesCleared)
+        player.level = i + 1
+      }
+    }
+  }
+
+
+
+  
+  
+  
 
 
   //--GRIDS--//
   // & IN-GRID FUNCTIONALITY //
   class Grid{
-    constructor(div, width, height, newTetrominoSpawnCell, fullBorder){
+    constructor(div, width, height, newTetrominoSpawnCell, fullBorder, player){
       this.div = div
       this.width = width
       this.height = height
@@ -19,6 +66,7 @@ function init() {
       this.cellsToChange = []
       this.fullBorder = fullBorder
       this.lines = []
+      this.player = player
     }
     generateGrid(){
       for (let i = 0; i < this.cellCount; i++){
@@ -75,7 +123,7 @@ function init() {
     }
     clearLine(){
       this.SetLines()
-      let lineCounter = 0 //move this to game stats in an array and then refactor the bottom of this for the blocks dropping
+      let lineCounter = 0 
       for (let i = 1; i < this.lines.length - 1; i++){
         if (this.lines[i].every(cell => this.cells[cell].classList.contains('block'))){
           for (let j = 1; j < this.width - 1; j++){
@@ -87,6 +135,9 @@ function init() {
           }
         }         
       }
+      this.player.linesCleared.unshift(lineCounter)  // `````````````````````````````````````````````````````````````````````
+      console.log(this.player.linesCleared)
+      updateScore(this.player)
       let lowestClearedCell = this.cellsToChange[0] 
       this.removeBlocks()   //switch removeBlock out for an animation?
       for (let i = lineCounter; i > 0; i --){
@@ -114,9 +165,9 @@ function init() {
   }
 
   //GAME GRID AND SIDE GRIDS//
-  const gameGrid  = new Grid(document.querySelector('.game-grid'), 12, 21, 5)
-  const qGrid  = new Grid(document.querySelector('.tetromino-queue'), 6, 10, 13, true)
-  const holdGrid  = new Grid(document.querySelector('.tetromino-hold'), 6, 10, 13, true)
+  const gameGrid  = new Grid(document.querySelector('.game-grid'), 12, 21, 5, false, playerOne)
+  const qGrid  = new Grid(document.querySelector('.tetromino-queue'), 6, 10, 13, true, playerOne)
+  const holdGrid  = new Grid(document.querySelector('.tetromino-hold'), 6, 10, 13, true, playerOne)
   gameGrid.generateGrid()
   qGrid.generateGrid()
   holdGrid.generateGrid()
@@ -126,7 +177,6 @@ function init() {
   // & TETROMINO FUNCTIONALITY //
   class Tetromino {                                                      
     constructor(name, layout = [], colour = '', grid, nextTetOne, nextTetTwo, heldTet){ 
-      this.active = false
       this.blocked = false
       this.nextTetOne = nextTetOne
       this.nextTetTwo = nextTetTwo
@@ -196,7 +246,8 @@ function init() {
         this.current.TLSpawnPosition = this.current.grid.newTetrominoSpawnCell
         this.adopt(this.nextTetOne)
         this.nextInQueue()
-        
+        //updateScore()
+        //this.castShadow()
 
       } else {
         this.confirmMovement()
@@ -301,6 +352,7 @@ function init() {
         }
       }
       this.spawn(this.current.colour)
+      //this.castShadow()
     }
     //PUT ROTATE & SWAP FUNCTION HERE? 
     confirmMovement(){        /// go thorugh these to see if they can be cut down or just do current = next etc. 
@@ -334,6 +386,7 @@ function init() {
     castShadow(){
       //for all cells in current cell postion
       //loop (minus width) until cell contains block
+      
       this.despawn()
       this.current.grid.cellsToChange = this.current.shadow
       this.current.grid.removeBlocks('shadow') 
@@ -423,8 +476,7 @@ function init() {
   //NewGame
   activeTetromino.spawnNew()
   queuedTetrominoOne.spawnNew()
-  
-  //gravity()
+  gravity()
   
   
   
