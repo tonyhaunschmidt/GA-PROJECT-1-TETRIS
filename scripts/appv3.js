@@ -118,6 +118,7 @@ function init() {
         cellPositions: [],
         rotation: 0,
         grid: grid,
+        TLSpawnPosition: grid.newTetrominoSpawnCell,
       }
       this.next = {
         name: name,
@@ -126,6 +127,7 @@ function init() {
         cellPositions: [],
         rotation: 0,
         grid: grid,
+        TLSpawnPosition: grid.newTetrominoSpawnCell,
       }
       
       //this.shadow = {
@@ -136,7 +138,7 @@ function init() {
       //  rotation: 0,
       //  grid: gameGrid,
       //} 
-      this.TLSpawnPosition = this.current.grid.newTetrominoSpawnCell
+      //this.TLSpawnPosition = this.current.grid.newTetrominoSpawnCell
     }
     spawn() {
       this.current.grid.cellsToChange = this.current.cellPositions
@@ -158,45 +160,96 @@ function init() {
         }
         cellRender += (this.current.grid.width - this.current.layout.length)
       }
+      if (this.current.name === 'I Tetromino'){
+        this.current.cellPositions = this.current.cellPositions.map(cell => cell - (this.current.grid.width * 2))
+      }
       this.spawn()
     }
     move(movement){
       if (movement === 'down'){
         this.next.cellPositions = this.current.cellPositions.map(cell => cell + this.current.grid.width)
-        this.TLSpawnPosition = this.TLSpawnPosition + this.current.grid.width
+        this.next.TLSpawnPosition = this.current.TLSpawnPosition + this.current.grid.width
       }
       if (movement === 'left'){
         this.next.cellPositions = this.current.cellPositions.map(cell => cell - 1)
-        this.TLSpawnPosition --
+        this.next.TLSpawnPosition = this.current.TLSpawnPosition - 1
       }
       if (movement === 'right'){
         this.next.cellPositions = this.current.cellPositions.map(cell => cell + 1)
-        this.TLSpawnPosition ++
+        this.next.TLSpawnPosition = this.current.TLSpawnPosition + 1
       }
-      if (movement === 'rotate'){
-        this.rotateLayout(1)
-        const rotatedPositionCells = []
-        let cellRender = this.TLSpawnPosition
-        console.log(this.current.cellPositions[0])
-        for (let i = 0; i < this.next.layout.length; i++){
-          for (let j = 0; j < this.next.layout.length; j++){
-            if (this.next.layout[i][j] === 1){
-              rotatedPositionCells.push(cellRender)
-            }        
-            cellRender ++
-          }
-          cellRender += (this.current.grid.width - this.next.layout.length)
-        }
-        this.next.cellPositions = rotatedPositionCells
-      }
-      if(movement === 'swap'){
-
-      }
-      this.movementCheck(movement)
-      this.rotationAndSwapCheck(movement)
+      this.movementCheck()
+      this.confirmMovement()
     }
+    rotate(rotations){
+      //rotating the layout                   //happy with this
+      while (rotations > 0){
+        const rotatedLayout = []
+        for (let i = 0; i < this.current.layout.length; i++) {
+          rotatedLayout.push([])
+          for (let j = 0; j < this.current.layout.length; j++) {
+            rotatedLayout[i].unshift(this.next.layout[j][i])
+          }
+        }
+        this.next.layout = rotatedLayout
+        this.next.rotation = (this.next.rotation + 1) % 4
+        rotations --
+      } 
+      /// getting cell positions (next)                //happy with this
+      let cellRender = this.current.TLSpawnPosition
+      for (let i = 0; i < this.next.layout.length; i++){
+        for (let j = 0; j < this.next.layout.length; j++){
+          if (this.next.layout[i][j] === 1){
+            this.next.cellPositions.push(cellRender)
+          }        
+          cellRender ++
+        }
+        cellRender += (this.current.grid.width - this.next.layout.length)
+      }
+      //checking if it can move there
+      this.movementCheck()
+      if (this.blocked === false){
+        this.confirmMovement()
+      } else { // if not, adjust for 3x3 in rotation position 3 (right side gone)
+        if (this.current.rotation === 3){
+          this.next.cellPositions = this.next.cellPositions.map(cell => cell - 1)
+          this.next.TLSpawnPosition = this.current.TLSpawnPosition - 1
+          this.movementCheck()
+          if (this.blocked === false){
+            this.confirmMovement()
+          } else {
+            this.next.rotation -=
+            console.log('blocked')
+            console.log(this.next.rotation)
+            console.log(this.next.TLSpawnPosition)
+            console.log(this.next.cellPositions)
+          }
+        }
+      }
+      //console.log(this.next)
+    }
+    swap(){
+      //ADD HERE
+    }
+    //rotateLayout(rotations){
+    //  this.next.layout = this.current.layout
+    //  while (rotations > 0){
+    //    const rotatedLayout = []
+    //    for (let i = 0; i < this.next.layout.length; i++) {
+    //      rotatedLayout.push([])
+    //      for (let j = 0; j < this.next.layout.length; j++) {
+    //        rotatedLayout[i].unshift(this.next.layout[j][i])
+    //      }
+    //    }
+    //    this.next.layout = rotatedLayout
+    //    rotations --
+    //    this.next.rotation = ((this.next.rotation + 1) % 4)
+    //  }
+    //} 
     movementCheck(){ 
       this.blocked = false
+      //console.log(this.next.cellPositions)
+      //console.log(this.current.TLSpawnPosition)
       this.despawn()
       for (let i = 0; i < this.next.cellPositions.length; i++){ //change to some array
         if (this.next.grid.cells[this.next.cellPositions[i]].classList.contains('block')){
@@ -204,50 +257,73 @@ function init() {
         }
       }
       this.spawn(this.current.colour)
-      if (this.blocked === false){
-        this.confirmMovement()
-      } else {
-        console.log('blocked')
-      }
     }
-    rotationAndSwapCheck(movement){
-      if (this.blocked === true && (movement === 'rotate' || movement === 'swap')){ //and rotate position
-        this.next.cellPositions = this.current.cellPositions.map(cell => cell - (this.current.grid.width * 2) - 2)
-        this.TLSpawnPosition = this.TLSpawnPosition - (this.current.grid.width * 2) - 2
-        this.movementCheck
+    confirmMovement(){        /// go thorugh these to see if they can be cut down or just do current = next etc. 
+      if (this.blocked === false){
+        console.log('movement confirmed')
+        console.log(this.next.cellPositions)
+        console.log(this.next.TLSpawnPosition)
+        this.despawn()
+        this.current.cellPositions = this.next.cellPositions
+        this.current.rotation = this.next.rotation
+        this.current.layout = this.next.layout
+        this.current.colour = this.next.colour
+        this.current.name = this.next.name
+        this.current.TLSpawnPosition = this.next.TLSpawnPosition
+        this.spawn(this.current.colour)
+        this.next.cellPositions = []
+        this.next.layout = this.current.layout
+        this.next.colour = this.current.colour
+        this.next.name = this.current.name
+        this.next.TLSpawnPosition = this.current.TLSpawnPosition
+      } else {
+        console.log('movement blocked')
+        console.log(this.next.cellPositions)
+        console.log(this.next.TLSpawnPosition)
+        this.next.cellPositions = []
+        this.next.layout = this.current.layout
+        this.next.colour = this.current.colour
+        this.next.name = this.current.name
+        this.next.TLSpawnPosition = this.current.TLSpawnPosition
+        
       }
+      this.blocked = false
+      //console.log(this.current)
+    }
+  }
+    //rotationAndSwapCheck(movement){
+    //  console.log(this.blocked)
+    //  console.log(movement === 'rotate' || movement === 'swap')
+    //  console.log(this.next.rotation)
+    //  console.log(this.next.rotation === 3)
+
+    //  if (this.blocked === true && (movement === 'rotate' || movement === 'swap') && this.current.rotation === 3){ //and rotate position
+    //    this.next.cellPositions = this.current.cellPositions.map(cell => cell - (this.current.grid.width * 1) - 1)
+    //    this.TLSpawnPosition = this.TLSpawnPosition - (this.current.grid.width * 1) - 1
+    //    this.movementCheck()
+    //    console.log('second check after movements')
+    //  } else {
+    //    //console.log('blocked')
+    //    //console.log(this.blocked)
+    //    this.next.cellPositions = this.current.cellPositions
+    //    this.next.rotation = this.current.rotation
+    //    this.next.layout = this.current.layout
+    //    this.next.colour = this.current.colour
+    //    this.next.name = this.current.name
+    //    this.next.TLSpawnPosition = this.current.TLSpawnPosition
+    
+        //console.log(this.current.TLSpawnPosition)
+        //console.log(this.next.TLSpawnPosition)
+        //console.log(this.current.rotation)
+      
     
 
       
 
-    }
-    confirmMovement(){
-      console.log(this.next)
-      this.despawn()
-      this.current.cellPositions = this.next.cellPositions
-      this.current.rotation = this.next.rotation
-      this.current.layout = this.next.layout
-      this.current.colour = this.next.colour
-      this.spawn(this.current.colour)
-    }
-    rotateLayout(rotations){
-      this.next.layout = this.current.layout
-      while (rotations > 0){
-        const rotatedLayout = []
-        for (let i = 0; i < this.next.layout.length; i++) {
-          rotatedLayout.push([])
-          for (let j = 0; j < this.next.layout.length; j++) {
-            rotatedLayout[i].unshift(this.next.layout[j][i])
-          }
-        }
-        this.next.layout = rotatedLayout
-        rotations --
-        this.next.rotation = ((this.next.rotation - 1) % 4)
-      } 
-    }
-      
 
-  }
+    
+    
+      
     
     //adopt(tetromino, layout, rotation, cellPositions, TLSpawnPosition, colour){
     //  if (layout === true){
@@ -269,11 +345,11 @@ function init() {
 
 
   //TETROMINO TYPES//
-  const ITetromino = new Tetromino('I Tetromino', [[0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0]], 'lightBlue', gameGrid)// can maybe get rid of name for all tetrominoes objects
+  const ITetromino = new Tetromino('I Tetromino', [[0, 0, 0, 0], [0, 0, 0, 0], [1, 1, 1, 1], [0, 0, 0, 0]], 'lightBlue', gameGrid)// can maybe get rid of name for all tetrominoes objects
   const OTetromino = new Tetromino('O Tetromino', [[1, 1],[1, 1]], 'yellow', gameGrid)
   const TTetromino = new Tetromino('T Tetromino', [[1, 1, 1], [0, 1, 0], [0, 0, 0]], 'purple', gameGrid)
-  const JTetromino = new Tetromino('J Tetromino', [[0, 1, 0], [0, 1, 0], [1, 1, 0]], 'darkBlue', gameGrid)
-  const LTetromino = new Tetromino('L Tetromino', [[0, 1, 0], [0, 1, 0], [0, 1, 1]], 'orange', gameGrid)
+  const JTetromino = new Tetromino('J Tetromino', [[1, 1, 1], [0, 0, 1], [0, 0, 0]], 'darkBlue', gameGrid)
+  const LTetromino = new Tetromino('L Tetromino', [[1, 1, 1], [1, 0, 0], [0, 0, 0]], 'orange', gameGrid)
   const STetromino = new Tetromino('S Tetromino', [[0, 1, 1], [1, 1, 0], [0, 0, 0]], 'green', gameGrid)
   const ZTetromino = new Tetromino('Z Tetromino', [[1, 1, 0], [0, 1, 1], [0, 0, 0]], 'red', gameGrid)
 
@@ -403,7 +479,7 @@ function init() {
     } else if (key === right){
       activeTetromino.move('right')
     } else if (key === up){
-      activeTetromino.move('rotate')
+      activeTetromino.rotate(1)
     } else if (key === down){
       activeTetromino.move('down')
     } else if (key === space){
@@ -414,6 +490,7 @@ function init() {
 
 
   //PLAY GAME
+  console.log(activeTetromino.current.name)
   activeTetromino.spawnNew()
   activeTetromino.active = true
   //gravity()
