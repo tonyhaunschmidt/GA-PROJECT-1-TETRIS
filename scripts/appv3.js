@@ -29,7 +29,6 @@ function init() {
         this.cells.push(cell)  
       }
       this.generateBorder()
-      this.SetLines()
     }
     generateBorder(){ 
       for (let i = 0; i < this.cellCount; i++){
@@ -67,13 +66,15 @@ function init() {
       this.cellsToChange = []
     }
     clearLine(){
+      this.SetLines()
       let lineCounter = 0 //move this to game stats in an array and then refactor the bottom of this for the blocks dropping
       for (let i = 1; i < this.lines.length - 1; i++){
-        const lineCheck = []
-        for (let j = 1; j < this.width - 1; j++){
-          lineCheck.push(this.cells[(this.lines[i][j])].classList.contains('block'))
-        }
-        if (lineCheck.every(cell => cell === true)){ //-clearing line
+        //const lineCheck = []
+        //for (let j = 1; j < this.width - 1; j++){
+        //  lineCheck.push(this.cells[(this.lines[i][j])].classList.contains('block'))
+        //}
+        //if (lineCheck.every(cell => cell === true)){ //-clearing line
+        if (this.lines[i].every(cell => this.cells[cell].classList.contains('block'))){
           for (let j = 1; j < this.width - 1; j++){
             this.cellsToChange.push(this.lines[i][j])
           }
@@ -85,7 +86,7 @@ function init() {
       }
       let lowestClearedCell = this.cellsToChange[0] 
       this.removeBlocks()   //switch removeBlock out for an animation?
-      for (let i = lineCounter; i > 0; i --){ //CAN MAYBE MOVE FROM HERE DOWNWARDS TO BE ANOTHER METHOD FOR BLOCKS DROPPING. 
+      for (let i = lineCounter; i > 0; i --){
         for (let j = lowestClearedCell - 3; j > 0; j--){
           if (j % this.width !== 0 && j % this.width !== this.width - 1 && this.cells[j].classList.contains('block')){
             const colour = this.cells[j].childNodes[0].classList
@@ -96,6 +97,16 @@ function init() {
           }
         }
         lowestClearedCell += this.width
+      }
+    }
+    gameOver(){
+      this.SetLines()
+      const firstLine = this.lines[0]
+      firstLine.pop()
+      firstLine.shift()
+      console.log(firstLine)
+      if (firstLine.some(cell => this.cells[cell].classList.contains('block'))){
+        window.alert('--GAME OVER--') //CHANGE ONCE GAME IS FINISHED
       }
     }
   }
@@ -188,6 +199,7 @@ function init() {
       this.movementCheck()
       if (movement === 'down' && this.blocked === true){ //LANDING
         this.current.grid.clearLine()
+        this.current.grid.gameOver()
         this.current.TLSpawnPosition = this.current.grid.newTetrominoSpawnCell
         //this.next.TLSpawnPosition = this.current.TLSpawnPosition
         this.adopt(this.nextTetOne)
