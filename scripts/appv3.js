@@ -1,7 +1,9 @@
 function init() {
-
-  //GAME STATS//
+  //FUNCTIONS & GAMEPLAY
   let gameLoopIntervalTime = 1000 * 1
+
+  const levelBrackets = [10, 30, 60, 100, 150, 210, 280, 360, 450, 550, 650, 750, 850]
+  const levelSpeeds = [1000, 800, 700, 600, 500, 450, 400, 350, 300, 250, 200, 150, 100]
 
   const playerOne = {
     score: 0,
@@ -33,24 +35,35 @@ function init() {
     console.log(player.score)
     console.log(player.level)
   }
-
-  const levelBrackets = [10, 30, 60, 100, 150, 210, 280, 360, 450, 550, 650, 750, 850]
-
   function currentLevel(player){
     const totalLinesCleared = player.linesCleared.reduce((sum, lines) => sum + lines, 0)
     for (let i = 0; i < levelBrackets.length; i++){
       if (totalLinesCleared > levelBrackets[i]){
         console.log(totalLinesCleared)
         player.level = i + 1
+        gameLoopIntervalTime = levelSpeeds[i]
       }
     }
   }
+  function setIntervalTime(player) {
+    return levelSpeeds[player.level]
+  }
+  function gravity() {
+    setInterval(() => {
+      activeTetromino.move('down')
+      console.log(setIntervalTime(playerOne))
+    }, setIntervalTime(playerOne))
+  }
+  function holdTetromino(activeTet, nextTetOne, nextTetTwo, holdTet){
+    if (holdTet.current.name === ''){
+      holdTet.adopt(activeTet, 'despawn')
+      activeTet.adopt(nextTetOne, 'despawn')
+      activeTetromino.nextInQueue()
+    } else {
+      activeTet.swap(holdTet)
+    }
+  }
 
-
-
-  
-  
-  
 
 
   //--GRIDS--//
@@ -448,42 +461,11 @@ function init() {
 
  
 
-  //FUNCTIONS & GAMEPLAY
-  function gravity() {
-    setInterval(() => {
-      activeTetromino.move('down')
-      //randomiseTetromino(queuedTetrominoTwo)
-    }, gameLoopIntervalTime)
-  }
-
-  function holdTetromino(activeTet, nextTetOne, nextTetTwo, holdTet){
-    if (holdTet.current.name === ''){
-      holdTet.adopt(activeTet, 'despawn')
-      activeTet.adopt(nextTetOne, 'despawn')
-      activeTetromino.nextInQueue()
-    } else {
-      activeTet.swap(holdTet)
-    }
-  }
-
-
-  //const playerOne = {
-  //  activeTet: activeTetromino,
-  //}
 
 
 
-  //NewGame
-  activeTetromino.spawnNew()
-  queuedTetrominoOne.spawnNew()
-  gravity()
   
-  
-  
-  
-  
-  
-  
+
   
   //CONTROL BOARD
   function handleKeyDown(e) {
@@ -508,6 +490,14 @@ function init() {
     } 
   }
   document.addEventListener('keydown', handleKeyDown)
+
+
+//NewGame
+  activeTetromino.spawnNew()
+  queuedTetrominoOne.spawnNew()
+  gravity()
+  
+
 
 
 }
