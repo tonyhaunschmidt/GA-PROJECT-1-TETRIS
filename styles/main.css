@@ -33,7 +33,11 @@ main {
 
 }
 
-
+.shadow{
+  background-color: darkgrey;
+  width: 80%;
+  height: 80%;
+}
 .grey {
   background-color: grey;
   border: 3px solid black;
@@ -89,3 +93,4 @@ main {
   width: 80%;
   height: 80%;
 }
+
