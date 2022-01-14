@@ -12,6 +12,15 @@ function init() {
     levelSpan: document.getElementById('playerOneLevel'),
   }
 
+  const playerTwo = {
+    score: 0,
+    level: 0,
+    linesCleared: [],
+    comboCount: 0,
+    scoreSpan: document.getElementById('playerTwoScore'),
+    levelSpan: document.getElementById('playerTwoLevel'),
+  }
+
   function updateScore(player){
     if (player.linesCleared[0] === 4){
       player.score += (800 * (player.level + 1))
@@ -186,6 +195,13 @@ function init() {
   gameGrid.generateGrid()
   qGrid.generateGrid()
   holdGrid.generateGrid()
+
+  const playerTwogameGrid  = new Grid(document.querySelector('.player-two-game-grid'), 12, 21, 17, true, playerTwo)
+  const playerTwoqGrid  = new Grid(document.querySelector('.player-two-tetromino-queue'), 6, 5, 13, true, playerTwo)
+  const playerTwoholdGrid  = new Grid(document.querySelector('.player-two-tetromino-hold'), 6, 5, 13, false, playerTwo)
+  playerTwogameGrid.generateGrid()
+  playerTwoqGrid.generateGrid()
+  playerTwoholdGrid.generateGrid()
 
 
   //--TETROMINOES--//
@@ -450,14 +466,17 @@ function init() {
   //TETROMINO QUEUE//   -have a look at refactoring 
   const queuedTetrominoOne = randomTetromino(qGrid)
   const queuedTetrominoTwo = randomTetromino(qGrid)
+  const playerTwoqueuedTetrominoOne = randomTetromino(playerTwoqGrid)
+  const playerTwoqueuedTetrominoTwo = randomTetromino(playerTwoqGrid)
   
   //TETROMINO ON HOLD//
-  const tetrominoHeld = new Tetromino('', [], '', holdGrid) 
+  const tetrominoHeld = new Tetromino('', [], '', holdGrid)
+  const playerTwotetrominoHeld = new Tetromino('', [], '', playerTwoholdGrid)
   //tetrominoHeld.TLSpawnPosition = holdGrid.width + 4 // can this be better? having to set spawn position after creating
   
   //IN-PLAY TETROMINO//
   const activeTetromino = randomTetromino(gameGrid, queuedTetrominoOne, queuedTetrominoTwo, tetrominoHeld, true)
-
+  const playerTwoactiveTetromino = randomTetromino(playerTwogameGrid, playerTwoqueuedTetrominoOne, playerTwoqueuedTetrominoTwo, playerTwotetrominoHeld, true)
  
 
 
@@ -496,14 +515,18 @@ function init() {
 
 
   //NewGame
-  function playGame(){
+  function playGame(e){
     activeTetromino.spawnNew()
     queuedTetrominoOne.spawnNew()
     gravity(activeTetromino, setIntervalTime(playerOne))
-    
-    
     mainMenu.style.display = 'none'
     gameScreen.style.display = 'flex'
+    if (e.target.value === 'two-player'){
+      playerTwoScreen.style.display = 'flex'
+      playerTwoactiveTetromino.spawnNew()
+      playerTwoqueuedTetrominoOne.spawnNew()
+      gravity(playerTwoactiveTetromino, setIntervalTime(playerTwo))
+    }
   }
 
 
@@ -518,8 +541,9 @@ function init() {
   const controlsScreen = document.getElementById('controls')
   const settingsScreen = document.getElementById('settings')
   const creditsScreen = document.getElementById('credits')
-  const playGameButton = document.getElementById('play-one-player')
   const playButtons = document.querySelectorAll('.play-button')
+  const playerTwoScreen = document.getElementById('player-two-screen')
+  const backToMainButtons = document.querySelectorAll('.back-to-main')
 
   
 
@@ -539,6 +563,7 @@ function init() {
   controlsButton.addEventListener('click', playControls)
   settingsButton.addEventListener('click', goToSettings)
   creditsButton.addEventListener('click', showCredits)
+  backToMainButtons.forEach(btn => btn.addEventListener('click', backToMainMenu))
 
 
 
@@ -627,6 +652,12 @@ function init() {
   function showCredits(){
     mainMenu.style.display = 'none'
     creditsScreen.style.display = 'flex'
+  }
+
+  function backToMainMenu(){
+    mainMenu.style.display = 'flex'
+    creditsScreen.style.display = 'none'
+    settingsScreen.style.display = 'none'
   }
 
 
