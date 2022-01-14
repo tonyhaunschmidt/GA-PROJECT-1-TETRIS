@@ -1,5 +1,14 @@
 function init() {
   //FUNCTIONS & GAMEPLAY
+  const settings = {
+    twoPlayer: false,
+    shadow: false,
+    music: false,
+  }
+
+
+
+
   const levelBrackets = [10, 30, 60, 100, 150, 210, 280, 360, 450, 550, 650, 750, 850]
   const levelSpeeds = [1000, 800, 700, 600, 500, 450, 400, 350, 300, 250, 200, 150, 100]
 
@@ -208,6 +217,7 @@ function init() {
   // & TETROMINO FUNCTIONALITY //
   class Tetromino {                                                      
     constructor(name, layout = [], colour = '', grid, nextTetOne, nextTetTwo, heldTet, shadowOption = false){ 
+      this.active = false
       this.blocked = false
       this.nextTetOne = nextTetOne
       this.nextTetTwo = nextTetTwo
@@ -259,30 +269,32 @@ function init() {
       this.spawn()
     }
     move(movement){
-      if (movement === 'down'){
-        this.next.cellPositions = this.current.cellPositions.map(cell => cell + this.current.grid.width)
-        this.next.TLSpawnPosition = this.current.TLSpawnPosition + this.current.grid.width
-      }
-      if (movement === 'left'){
-        this.next.cellPositions = this.current.cellPositions.map(cell => cell - 1)
-        this.next.TLSpawnPosition = this.current.TLSpawnPosition - 1
-      }
-      if (movement === 'right'){
-        this.next.cellPositions = this.current.cellPositions.map(cell => cell + 1)
-        this.next.TLSpawnPosition = this.current.TLSpawnPosition + 1
-      }
-      this.movementCheck()
-      if (movement === 'down' && this.blocked === true){ //LANDING
-        this.current.grid.clearLine()
-        this.current.grid.gameOverCheck()
-        this.current.TLSpawnPosition = this.current.grid.newTetrominoSpawnCell
-        this.adopt(this.nextTetOne)
-        this.nextInQueue()
-        //updateScore()
-        this.castShadow()
+      if (this.active === true){
+        if (movement === 'down'){
+          this.next.cellPositions = this.current.cellPositions.map(cell => cell + this.current.grid.width)
+          this.next.TLSpawnPosition = this.current.TLSpawnPosition + this.current.grid.width
+        }
+        if (movement === 'left'){
+          this.next.cellPositions = this.current.cellPositions.map(cell => cell - 1)
+          this.next.TLSpawnPosition = this.current.TLSpawnPosition - 1
+        }
+        if (movement === 'right'){
+          this.next.cellPositions = this.current.cellPositions.map(cell => cell + 1)
+          this.next.TLSpawnPosition = this.current.TLSpawnPosition + 1
+        }
+        this.movementCheck()
+        if (movement === 'down' && this.blocked === true){ //LANDING
+          this.current.grid.clearLine()
+          this.current.grid.gameOverCheck()
+          this.current.TLSpawnPosition = this.current.grid.newTetrominoSpawnCell
+          this.adopt(this.nextTetOne)
+          this.nextInQueue()
+          //updateScore()
+          this.castShadow()
 
-      } else {
-        this.confirmMovement()
+        } else {
+          this.confirmMovement()
+        }
       }
     }
     rotate(rotations){
@@ -488,42 +500,87 @@ function init() {
   //CONTROL BOARD
   function handleKeyDown(e) {
     const key = e.keyCode
-    const left = 37
-    const right = 39
-    const up = 38
-    const down = 40
-    const space = 32 // add different keys (number pad)(touch screen for phone?)
+    const twoLeft = 37
+    const twoRight = 39
+    const twoUp = 38
+    const twoDown = 40
+    const twoSpace = 32 // add different keys (number pad)(touch screen for phone?)
+    const oneLeft = 65 //A
+    const oneRight = 68 //D
+    const oneUp = 87 //W
+    const oneDown = 83 //S
+    const oneSpace = 16 //shift
     
-    if (key === left){
+
+    if (key === oneLeft){
       activeTetromino.move('left')
       mainMenuTetromino.move('left')
-    } else if (key === right){
+      controlsActiveTetromino.move('left')
+    } else if (key === oneRight){
       activeTetromino.move('right')
       mainMenuTetromino.move('right')
-    } else if (key === up){
+      controlsActiveTetromino.move('right')
+    } else if (key === oneUp){
       activeTetromino.rotate(1) //add a rotate(3) for opposite rotation
-    } else if (key === down){
+      controlsActiveTetromino.rotate(1)
+    } else if (key === oneDown){
       activeTetromino.move('down')
       mainMenuTetromino.move('down')
-      //console.log('sesd')
-    } else if (key === space){
+      controlsActiveTetromino.move('down')
+    } else if (key === oneSpace){
       holdTetromino(activeTetromino, queuedTetrominoOne, queuedTetrominoTwo, tetrominoHeld)
-      
+      holdTetromino(controlsActiveTetromino, controlsQueuedTetrominoOne, controlsQueuedTetrominoTwo, controlsTetrominoHeld)
+    } else if (key === twoLeft){
+      playerTwoactiveTetromino.move('left')
+      mainMenuTetromino.move('left')
+      controlsActiveTetromino.move('left')
+      if (settings.twoPlayer === false){
+        activeTetromino.move('left')
+      }
+    } else if (key === twoRight){
+      playerTwoactiveTetromino.move('right')
+      mainMenuTetromino.move('right')
+      controlsActiveTetromino.move('right')
+      if (settings.twoPlayer === false){
+        activeTetromino.move('right')
+      }
+    } else if (key === twoUp){
+      playerTwoactiveTetromino.rotate(1) //add a rotate(3) for opposite rotation
+      controlsActiveTetromino.rotate(1)
+      if (settings.twoPlayer === false){
+        activeTetromino.rotate(1)
+      }
+    } else if (key === twoDown){
+      playerTwoactiveTetromino.move('down')
+      mainMenuTetromino.move('down')
+      controlsActiveTetromino.move('down')
+      if (settings.twoPlayer === false){
+        activeTetromino.move('down')
+      }
+    } else if (key === twoSpace){
+      holdTetromino(playerTwoactiveTetromino, playerTwoqueuedTetrominoOne, playerTwoqueuedTetrominoTwo, playerTwotetrominoHeld)
+      holdTetromino(controlsActiveTetromino, controlsQueuedTetrominoOne, controlsQueuedTetrominoTwo, controlsTetrominoHeld)
+      if (settings.twoPlayer === false){
+        holdTetromino(activeTetromino, queuedTetrominoOne, queuedTetrominoTwo, tetrominoHeld)
+      }
     } 
   }
-  document.addEventListener('keydown', handleKeyDown)
+  document.addEventListener('keydown', handleKeyDown) ///might need to change to keypress to handle 2player
 
 
-  //NewGame
+  //NEWGAME//
   function playGame(e){
     activeTetromino.spawnNew()
+    activeTetromino.active = true
     queuedTetrominoOne.spawnNew()
     gravity(activeTetromino, setIntervalTime(playerOne))
     mainMenu.style.display = 'none'
     gameScreen.style.display = 'flex'
     if (e.target.value === 'two-player'){
+      settings.twoPlayer = true
       playerTwoScreen.style.display = 'flex'
       playerTwoactiveTetromino.spawnNew()
+      playerTwoactiveTetromino.active = true
       playerTwoqueuedTetrominoOne.spawnNew()
       gravity(playerTwoactiveTetromino, setIntervalTime(playerTwo))
     }
@@ -545,7 +602,6 @@ function init() {
   const playerTwoScreen = document.getElementById('player-two-screen')
   const backToMainButtons = document.querySelectorAll('.back-to-main')
 
-  
 
   function randomButtonColour(e){
     e.target.style.backgroundColor = `${tetrominoColours[Math.floor(Math.random() * 7)]}`
@@ -564,11 +620,6 @@ function init() {
   settingsButton.addEventListener('click', goToSettings)
   creditsButton.addEventListener('click', showCredits)
   backToMainButtons.forEach(btn => btn.addEventListener('click', backToMainMenu))
-
-
-
-
-
 
 
 
@@ -609,6 +660,7 @@ function init() {
 
   //MAIN-MENU PLAY//
   mainMenuTetromino.spawnNew()
+  mainMenuTetromino.active = true
   gravity(mainMenuTetromino, 200)
   startLetters()
 
@@ -629,7 +681,6 @@ function init() {
   
   //TETROMINO ON HOLD//
   const controlsTetrominoHeld = new Tetromino('', [], '', controlsHoldGrid) 
-  //tetrominoHeld.TLSpawnPosition = holdGrid.width + 4 // can this be better? having to set spawn position after creating
   
   //IN-PLAY TETROMINO//
   const controlsActiveTetromino = randomTetromino(controlsGameGrid, controlsQueuedTetrominoOne, controlsQueuedTetrominoTwo, controlsTetrominoHeld, true)
@@ -638,6 +689,7 @@ function init() {
   //CONTROLS PLAY
   function playControls(){
     controlsActiveTetromino.spawnNew()
+    controlsActiveTetromino.active = true
     controlsQueuedTetrominoOne.spawnNew()
     mainMenu.style.display = 'none'
     controlsScreen.style.display = 'flex'
@@ -654,14 +706,14 @@ function init() {
     creditsScreen.style.display = 'flex'
   }
 
-  function backToMainMenu(){
+  function backToMainMenu(e){
     mainMenu.style.display = 'flex'
     creditsScreen.style.display = 'none'
     settingsScreen.style.display = 'none'
+    if (e.target.value === 'refresh'){
+      window.location.reload()
+    }
   }
-
-
-
 
 }
 window.addEventListener('DOMContentLoaded', init)
