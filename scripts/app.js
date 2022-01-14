@@ -14,8 +14,8 @@ function init() {
     level: 0,
     linesCleared: [],
     comboCount: 0,
-    scoreSpan: document.getElementById('playerOneScore'),
-    levelSpan: document.getElementById('playerOneLevel'),
+    scoreSpan: document.querySelectorAll('.playerOneScore'),
+    levelSpan: document.querySelectorAll('.playerOneLevel'),
   }
 
   const playerTwo = {
@@ -23,8 +23,8 @@ function init() {
     level: 0,
     linesCleared: [],
     comboCount: 0,
-    scoreSpan: document.getElementById('playerTwoScore'),
-    levelSpan: document.getElementById('playerTwoLevel'),
+    scoreSpan: document.querySelectorAll('playerTwoScore'),
+    levelSpan: document.querySelectorAll('playerTwoLevel'),
   }
 
   function updateScore(player){
@@ -47,8 +47,10 @@ function init() {
       player.comboCount = 0
     }
     currentLevel(player)
-    player.scoreSpan.innerText = player.score
-    player.levelSpan.innerText = player.level
+    player.scoreSpan.forEach(score => score.innerText = player.score) 
+    player.levelSpan.forEach(level => level.innerText = player.level) 
+    //player.scoreSpan.innerText = player.score
+    //player.levelSpan.innerText = player.level
   }
   function currentLevel(player){
     const totalLinesCleared = player.linesCleared.reduce((sum, lines) => sum + lines, 0)
