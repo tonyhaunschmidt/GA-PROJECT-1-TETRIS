@@ -1,7 +1,5 @@
 function init() {
   //FUNCTIONS & GAMEPLAY
-  let gameLoopIntervalTime = 1000 * 1
-
   const levelBrackets = [10, 30, 60, 100, 150, 210, 280, 360, 450, 550, 650, 750, 850]
   const levelSpeeds = [1000, 800, 700, 600, 500, 450, 400, 350, 300, 250, 200, 150, 100]
 
@@ -10,6 +8,8 @@ function init() {
     level: 0,
     linesCleared: [],
     comboCount: 0,
+    scoreSpan: document.getElementById('playerOneScore'),
+    levelSpan: document.getElementById('playerOneLevel'),
   }
 
   function updateScore(player){
@@ -32,8 +32,8 @@ function init() {
       player.comboCount = 0
     }
     currentLevel(player)
-    console.log(player.score)
-    console.log(player.level)
+    player.scoreSpan.innerText = player.score
+    player.levelSpan.innerText = player.level
   }
   function currentLevel(player){
     const totalLinesCleared = player.linesCleared.reduce((sum, lines) => sum + lines, 0)
@@ -41,18 +41,16 @@ function init() {
       if (totalLinesCleared > levelBrackets[i]){
         console.log(totalLinesCleared)
         player.level = i + 1
-        gameLoopIntervalTime = levelSpeeds[i]
       }
     }
   }
   function setIntervalTime(player) {
     return levelSpeeds[player.level]
   }
-  function gravity() {
+  function gravity(tetromino, speed) {
     setInterval(() => {
-      activeTetromino.move('down')
-      console.log(setIntervalTime(playerOne))
-    }, setIntervalTime(playerOne))
+      tetromino.move('down')
+    }, speed)
   }
   function holdTetromino(activeTet, nextTetOne, nextTetTwo, holdTet){
     if (holdTet.current.name === ''){
@@ -62,6 +60,10 @@ function init() {
     } else {
       activeTet.swap(holdTet)
     }
+  }
+
+  function gameOver(){
+
   }
 
 
@@ -101,7 +103,7 @@ function init() {
       }
       this.addBlocks('grey')
     }
-    SetLines(){
+    setLines(){
       this.lines = []
       for (let i = 0; i < this.height; i++){
         this.lines.push([])
@@ -135,7 +137,7 @@ function init() {
       this.cellsToChange = []
     }
     clearLine(){
-      this.SetLines()
+      this.setLines()
       let lineCounter = 0 
       for (let i = 1; i < this.lines.length - 1; i++){
         if (this.lines[i].every(cell => this.cells[cell].classList.contains('block'))){
@@ -166,13 +168,13 @@ function init() {
         lowestClearedCell += this.width
       }
     }
-    gameOver(){
-      this.SetLines()
-      const firstLine = this.lines[0]
-      firstLine.pop()
-      firstLine.shift()
-      if (firstLine.some(cell => this.cells[cell].classList.contains('block'))){
-        window.alert('--GAME OVER--') //CHANGE ONCE GAME IS FINISHED
+    gameOverCheck(){
+      this.setLines()
+      const secondLine = this.lines[1]
+      secondLine.pop()
+      secondLine.shift()
+      if (secondLine.some(cell => this.cells[cell].classList.contains('block'))){
+        window.alert('--GAMEOVER--')
       }
     }
   }
@@ -189,11 +191,12 @@ function init() {
   //--TETROMINOES--//
   // & TETROMINO FUNCTIONALITY //
   class Tetromino {                                                      
-    constructor(name, layout = [], colour = '', grid, nextTetOne, nextTetTwo, heldTet){ 
+    constructor(name, layout = [], colour = '', grid, nextTetOne, nextTetTwo, heldTet, shadowOption = false){ 
       this.blocked = false
       this.nextTetOne = nextTetOne
       this.nextTetTwo = nextTetTwo
       this.heldTet = heldTet
+      this.shadowOption = shadowOption
       this.current = {
         name: name,
         layout: layout,
@@ -255,7 +258,7 @@ function init() {
       this.movementCheck()
       if (movement === 'down' && this.blocked === true){ //LANDING
         this.current.grid.clearLine()
-        this.current.grid.gameOver()
+        this.current.grid.gameOverCheck()
         this.current.TLSpawnPosition = this.current.grid.newTetrominoSpawnCell
         this.adopt(this.nextTetOne)
         this.nextInQueue()
@@ -397,26 +400,21 @@ function init() {
       this.nextTetOne.adopt(this.nextTetTwo, 'despawn')
     }
     castShadow(){
-      //for all cells in current cell postion
-      //loop (minus width) until cell contains block
-      
-      this.despawn()
-      this.current.grid.cellsToChange = this.current.shadow
-      this.current.grid.removeBlocks('shadow') 
-      
+      if (this.shadowOption === true){
 
-
-      this.current.shadow = this.current.cellPositions
-      
-      
-      while (!this.current.shadow.some(cell => this.current.grid.cells[cell + this.current.grid.width].classList.contains('block'))){
-        this.current.shadow = this.current.shadow.map(cell => cell + this.current.grid.width)
-        
+        this.despawn()
+        this.current.grid.cellsToChange = this.current.shadow
+        this.current.grid.removeBlocks('shadow') 
+    
+        this.current.shadow = this.current.cellPositions
+    
+        while (!this.current.shadow.some(cell => this.current.grid.cells[cell + this.current.grid.width].classList.contains('block'))){
+          this.current.shadow = this.current.shadow.map(cell => cell + this.current.grid.width)      
+        }
+        this.spawn()
+        this.current.grid.cellsToChange = this.current.shadow
+        this.current.grid.addBlocks('shadow')
       }
-      this.spawn()
-      this.current.grid.cellsToChange = this.current.shadow
-      this.current.grid.addBlocks('shadow') //change from add blocks to cast shadow and shadow clas will be different from block class
-      
     }
   }
 
@@ -424,7 +422,7 @@ function init() {
     
 
   //TETROMINO TYPES//
-  const ITetromino = new Tetromino('I Tetromino', [[0, 0, 0, 0], [0, 0, 0, 0], [1, 1, 1, 1], [0, 0, 0, 0]], 'lightBlue', gameGrid)// can maybe get rid of name for all tetrominoes objects
+  const ITetromino = new Tetromino('I Tetromino', [[0, 0, 0, 0], [0, 0, 0, 0], [1, 1, 1, 1], [0, 0, 0, 0]], 'lightBlue', gameGrid)
   const OTetromino = new Tetromino('O Tetromino', [[1, 1],[1, 1]], 'yellow', gameGrid)
   const TTetromino = new Tetromino('T Tetromino', [[1, 1, 1], [0, 1, 0], [0, 0, 0]], 'purple', gameGrid)
   const JTetromino = new Tetromino('J Tetromino', [[1, 1, 1], [0, 0, 1], [0, 0, 0]], 'darkBlue', gameGrid)
@@ -457,7 +455,7 @@ function init() {
   //tetrominoHeld.TLSpawnPosition = holdGrid.width + 4 // can this be better? having to set spawn position after creating
   
   //IN-PLAY TETROMINO//
-  const activeTetromino = randomTetromino(gameGrid, queuedTetrominoOne, queuedTetrominoTwo, tetrominoHeld)
+  const activeTetromino = randomTetromino(gameGrid, queuedTetrominoOne, queuedTetrominoTwo, tetrominoHeld, true)
 
  
 
@@ -478,12 +476,16 @@ function init() {
     
     if (key === left){
       activeTetromino.move('left')
+      mainMenuTetromino.move('left')
     } else if (key === right){
       activeTetromino.move('right')
+      mainMenuTetromino.move('right')
     } else if (key === up){
       activeTetromino.rotate(1) //add a rotate(3) for opposite rotation
     } else if (key === down){
       activeTetromino.move('down')
+      mainMenuTetromino.move('down')
+      //console.log('sesd')
     } else if (key === space){
       holdTetromino(activeTetromino, queuedTetrominoOne, queuedTetrominoTwo, tetrominoHeld)
       
@@ -493,10 +495,55 @@ function init() {
 
 
 //NewGame
-  activeTetromino.spawnNew()
-  queuedTetrominoOne.spawnNew()
-  gravity()
+  //activeTetromino.spawnNew()
+  //queuedTetrominoOne.spawnNew()
+  //gravity(activeTetromino, setIntervalTime(playerOne))
   
+
+
+
+  //MENUS AND OTHERS//--------------------
+  const holder = new Grid(document.querySelector('.main-menu-grid'), 18, 30, 43, true, playerOne)
+  const mainMenuGrid = new Grid(document.querySelector('.main-menu-grid'), 18, 30, 25, true, playerOne)
+  mainMenuGrid.generateGrid()
+
+  const T = new Tetromino('T', [[1, 1, 1, 1], [1, 1, 1, 1], [0, 1, 1, 0], [0, 1, 1, 0]], 'purple', mainMenuGrid)
+  const E = new Tetromino('E', [[1, 1, 1], [1, 1, 0], [1, 1, 1], [1, 1, 0], [1, 1, 1]], 'green', mainMenuGrid)
+  const T2 = new Tetromino('T2', [[1, 1, 1, 1], [1, 1, 1, 1], [0, 1, 1, 0], [0, 1, 1, 0]], 'darkBlue', mainMenuGrid)
+  const R = new Tetromino('R', [[1, 1, 1], [1, 0, 1], [1, 1, 0], [1, 0, 1], [1, 0, 1]], 'yellow', mainMenuGrid)
+  const I = new Tetromino('I', [[1, 1], [1, 1], [1, 1],[1, 1]], 'lightBlue', mainMenuGrid)
+  const S = new Tetromino('S', [[0, 1, 1], [1, 0, 0], [0, 1, 0], [0, 0, 1], [1, 1, 0]], 'red', mainMenuGrid)
+
+  const blank = new Tetromino('blank', [], '', holder)
+  const menuTetrominoTwo = new Tetromino('I', [[0, 0, 1, 1], [0, 0, 1, 1], [0, 0, 1, 1],[0, 0, 1, 1]], 'lightBlue', holder)
+  const mainMenuTetromino = new Tetromino('S', [[0, 1, 1], [1, 0, 0], [0, 1, 0], [0, 0, 1], [1, 1, 0]], 'red', mainMenuGrid, menuTetrominoTwo)
+  
+  function startLetters(){
+    setInterval(() => {
+      if (mainMenuTetromino.current.name === 'S'){
+        menuTetrominoTwo.adopt(I)
+      } else if (mainMenuTetromino.current.name === 'I'){
+        menuTetrominoTwo.adopt(R)
+      } else if (mainMenuTetromino.current.name === 'R'){
+        menuTetrominoTwo.adopt(T2)
+      } else if (mainMenuTetromino.current.name === 'T2'){
+        menuTetrominoTwo.adopt(E)
+      } else if (mainMenuTetromino.current.name === 'E'){
+        menuTetrominoTwo.adopt(T)
+      } else if (mainMenuTetromino.current.name === 'T'){
+        menuTetrominoTwo.adopt(blank)
+      }else {
+        menuTetrominoTwo.current.display = []
+      }
+    }, 100)
+  }
+
+  //MAIN-MENU PLAY//
+  mainMenuTetromino.spawnNew()
+  gravity(mainMenuTetromino, 200)
+  startLetters()
+
+
 
 
 

@@ -5,6 +5,15 @@ main {
   flex-wrap: wrap;
   text-align: center;
 }
+
+.main-menu-grid {
+  border: 1px solid black;
+  width: 50vw;
+  height: 80vw;
+  display: flex;
+  flex-wrap: wrap;
+}
+
 .game-grid {
   border: 1px solid black;
   width: 40vw;
@@ -41,8 +50,8 @@ main {
 .grey {
   background-color: grey;
   border: 3px solid black;
-  width: 80%;
-  height: 80%;
+  width: 75%;
+  height: 75%;
 }
 
 .lightBlue {
@@ -90,7 +99,7 @@ main {
 .red {
   background-color: red;
   border: 3px solid black;
-  width: 80%;
-  height: 80%;
+  width: 75%;
+  height: 75%;
 }
 
