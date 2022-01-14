@@ -27,9 +27,11 @@
         <div class='side-bar'>
           <div class='tetromino-queue'></div>
           <div class='tetromino-hold'></div>
-          <h1>PLAYER 1</h1>
-          <h2>SCORE: <span id =playerOneScore>0</span></h2>
-          <h2>LEVEL: <span id='playerOneLevel'>0</span></h2>
+          <div class='side-bar-text'>
+            <h1>PLAYER 1</h1>
+            <p>SCORE: <span id =playerOneScore>0</span></p>
+            <p>LEVEL: <span id='playerOneLevel'>0</span></p>
+          </div>
         </div>
       </div>
       <div class='player-screen' id='player-two-screen'>
@@ -37,8 +39,11 @@
         <div class='side-bar'>
           <div class='player-two-tetromino-queue'></div>
           <div class='player-two-tetromino-hold'></div>
-          <h1>SCORE: <span id =playerTwoScore>0</span></h1>
-          <h1>LEVEL: <span id='playerTwoLevel'>0</span></h1>
+          <div class='side-bar-text'>
+            <h1>PLAYER 2</h1>
+            <p>SCORE: <span id =playerTwoScore>0</span></p>
+            <p>LEVEL: <span id='playerTwoLevel'>0</span></p>
+          </div>
         </div>
       </div>
     </section>
@@ -47,24 +52,32 @@
       <div class='side-bar'>
         <div class='controls-tetromino-queue'></div>
         <div class='controls-tetromino-hold'></div>
-        <h1>CONTROLS</h1>
-        <h3>player 1</h3>
-        <ul>
-          <li>down - faster drop</li>
-          <li>left - move left</li>
-          <li>right - move right</li>
-          <li>up - rotate</li>
-          <li>space - hold/switch tetromino</li>
-        </ul>
-        <h3>player 2</h3>
-        <ul>
-          <li>s - faster drop</li>
-          <li>a - move left</li>
-          <li>d - move right</li>
-          <li>w - rotate</li>
-          <li>shift - hold/switch tetromino</li>
-        </ul>
-        <button class='back-to-main' value='refresh'>BACK TO MAIN MENU</button>
+        <div class='side-bar-text'>
+          <h3>CONTROLS</h3>
+          <div id='control-instructions'>
+            <div>
+              <h3>Player 1</h3>
+              <ul>
+                <li>S key - faster drop</li>
+                <li>A key - move left</li>
+                <li>D key - move right</li>
+                <li>W key - rotate</li>
+                <li>shift - hold/switch tetromino</li>
+              </ul>
+            </div>
+            <div>
+              <h3>Player 2</h3>
+              <ul>
+                <li>down key - faster drop</li>
+                <li>left key - move left</li>
+                <li>right key - move right</li>
+                <li>down key - rotate</li>
+                <li>space - hold/switch tetromino</li>
+              </ul>
+            </div>
+          </div>
+          <button class='back-to-main' value='refresh'>BACK TO MAIN MENU</button>
+        </div>  
       </div>
     </section>
     <section id='settings'>
@@ -73,8 +86,26 @@
     </section>
     <section id='credits'>
       <h1>--CREDITS--</h1>
-
+      <p>ORIGINAL BY ALEXEY PAJITNOV</p>
+      <p>RECREATED BY TONY HAUNSCHMIDT</p>
       <button class='back-to-main'>BACK TO MAIN MENU</button>
+    </section>
+    <section id='one-player-game-over'>
+      <h1>--GAME OVER--</h1>
+      <h2>PLAYER 1</h2>
+      <p>SCORE: <span id =playerOneScore>0</span></p>
+      <p>LEVEL: <span id='playerOneLevel'>0</span></p>
+      <button class='back-to-main' value='refresh'>BACK TO MAIN MENU</button>
+    </section>
+    <section id='two-player-game-over'>
+      <h1>--GAME OVER--</h1>
+      <h2>PLAYER 1</h2>
+      <p>SCORE: <span id =playerOneScore>0</span></p>
+      <p>LEVEL: <span id='playerOneLevel'>0</span></p>
+      <h2>PLAYER 2</h2>
+      <p>SCORE: <span id =playerTwoScore>0</span></p>
+      <p>LEVEL: <span id='playerTwoLevel'>0</span></p>
+      <button class='back-to-main' value='refresh'>BACK TO MAIN MENU</button>
     </section>
   </body>
 </html>

@@ -80,8 +80,16 @@ function init() {
     }
   }
 
+  const onePlayerGameOver = document.getElementById('one-player-game-over')
+  const twoPlayerGameOver = document.getElementById('two-player-game-over')
   function gameOver(){
-    window.alert('--GAME OVER--')
+    gameScreen.style.display = 'none'
+    if (settings.twoPlayer === false){
+      onePlayerGameOver.style.display = 'flex'
+    } else {
+      twoPlayerGameOver.style.display = 'flex'
+    }
+    
   }
 
 

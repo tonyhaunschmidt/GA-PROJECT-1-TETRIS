@@ -13,7 +13,7 @@ button{
   padding: 10px 8px;
 }
 
-main, .player-screen, #game, #controls, #settings, #credits{
+main, .player-screen, #game, #controls, #settings, #credits, #one-player-game-over, #two-player-game-over{
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -43,12 +43,17 @@ main, .player-screen, #game, #controls, #settings, #credits{
   height: 40vh;
   padding: 50px;
 }
+
+#credits, #settings, #one-player-game-over, #two-player-game-over{
+  display: flex;
+  flex-direction: column;
+}
+
 .side-bar{
   height: 90vh;
 }
 
 .game-grid, .player-two-game-grid, .controls-game-grid {
-  borer: 1px solid black;
   width: 51.3vh;
   height: 90vh;
   display: flex;
@@ -57,7 +62,6 @@ main, .player-screen, #game, #controls, #settings, #credits{
 }
 
 .tetromino-queue, .player-two-tetromino-queue, .controls-tetromino-queue {
-  boder: 1px solid black;
   width: 25.6vh;
   height: 21.5vh;
   display: flex;
@@ -65,12 +69,20 @@ main, .player-screen, #game, #controls, #settings, #credits{
   background-color: #452b68;
 }
 .tetromino-hold, .player-two-tetromino-hold, .controls-tetromino-hold {
-  brder: 1px solid black;
   width: 25.6vh;
   height: 21.5vh;
   display: flex;
   flex-wrap: wrap;
   background-color: #452b68;
+}
+
+.side-bar-text{
+  height: 47vh;
+}
+
+#control-instructions{
+  display: flex;
+  padding: 0;
 }
 
 .block {
@@ -181,5 +193,9 @@ main {
 }
 
 #credits {
+  display: none;
+}
+
+#one-player-game-over, #two-player-game-over{
   display: none;
 }
