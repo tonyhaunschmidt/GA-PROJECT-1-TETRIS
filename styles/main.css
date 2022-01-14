@@ -4,16 +4,23 @@ body{
   flex-direction: column;
   text-align: center;
   background-color: darkslategray;
+  font-family: 'Changa', sans-serif;
 }
-main, #game, #controls{
+
+button{
+  font-family: 'Changa', sans-serif;
+  padding: 10px 8px;
+}
+
+main, #game, #controls, #settings, #credits{
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
   height: 95vh;
-
-  
 }
+
+
 
 .main-menu-grid {
   border: 1px solid black;
@@ -31,8 +38,11 @@ main, #game, #controls{
   height: 40vh;
   padding: 50px;
 }
+.side-bar{
+  height: 90vh;
+}
 
-.game-grid {
+.game-grid, .controls-game-grid {
   borer: 1px solid black;
   width: 51.3vh;
   height: 90vh;
@@ -41,11 +51,7 @@ main, #game, #controls{
   background-color: #452b68;
 }
 
-.side-bar{
-  height: 90vh;
-}
-
-.tetromino-queue {
+.tetromino-queue, .controls-tetromino-queue {
   boder: 1px solid black;
   width: 25.6vh;
   height: 21.5vh;
@@ -53,7 +59,7 @@ main, #game, #controls{
   flex-wrap: wrap;
   background-color: #452b68;
 }
-.tetromino-hold {
+.tetromino-hold, .controls-tetromino-hold {
   brder: 1px solid black;
   width: 25.6vh;
   height: 21.5vh;
@@ -149,16 +155,26 @@ main, #game, #controls{
 
 
 
+
+
 /* TO CHANGE SCREENS */
 
 main {
-  dislay: none;
+  display: n;
 }
 
 #game {
-  diplay: none;
+  display: none;
 }
 
 #controls {
+  display: none;
+}
+
+#settings {
+  display: none;
+}
+
+#credits {
   display: none;
 }

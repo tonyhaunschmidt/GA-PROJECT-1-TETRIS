@@ -63,7 +63,7 @@ function init() {
   }
 
   function gameOver(){
-
+    window.alert('--GAME OVER--')
   }
 
 
@@ -174,7 +174,7 @@ function init() {
       secondLine.pop()
       secondLine.shift()
       if (secondLine.some(cell => this.cells[cell].classList.contains('block'))){
-        window.alert('--GAMEOVER--')
+        gameOver()
       }
     }
   }
@@ -418,7 +418,8 @@ function init() {
     }
   }
 
-      
+  //COLOURS
+  const tetrominoColours = ['#1eb9c7', '#f3f500', '#964ff1', '#0c2ce4', '#f18125', '#4cd421', '#e80d0d']
     
 
   //TETROMINO TYPES//
@@ -495,14 +496,57 @@ function init() {
 
 
   //NewGame
-  activeTetromino.spawnNew()
-  queuedTetrominoOne.spawnNew()
-  //gravity(activeTetromino, setIntervalTime(playerOne))
+  function playGame(){
+    activeTetromino.spawnNew()
+    queuedTetrominoOne.spawnNew()
+    gravity(activeTetromino, setIntervalTime(playerOne))
+    
+    
+    mainMenu.style.display = 'none'
+    gameScreen.style.display = 'flex'
+  }
+
+
+
+  //MAIN MENU//--------------------
+  const buttons = document.querySelectorAll('button')
+  const controlsButton = document.getElementById('controls-button')
+  const settingsButton = document.getElementById('settings-button')
+  const creditsButton = document.getElementById('credits-button')
+  const mainMenu = document.querySelector('main')
+  const gameScreen = document.getElementById('game')
+  const controlsScreen = document.getElementById('controls')
+  const settingsScreen = document.getElementById('settings')
+  const creditsScreen = document.getElementById('credits')
+  const playGameButton = document.getElementById('play-one-player')
+  const playButtons = document.querySelectorAll('.play-button')
+
   
 
+  function randomButtonColour(e){
+    e.target.style.backgroundColor = `${tetrominoColours[Math.floor(Math.random() * 7)]}`
+    //e.target.style.backgroundColour = '#1eb9c7'
+    console.log('sdvs')
+  }
+  function returnButtonColour(e){
+    e.target.style.backgroundColor = ''
+  }
 
 
-  //MENUS AND OTHERS//--------------------
+  buttons.forEach(btn => btn.addEventListener('mouseenter', randomButtonColour))
+  buttons.forEach(btn => btn.addEventListener('mouseleave', returnButtonColour))
+  playButtons.forEach(btn => btn.addEventListener('click', playGame))
+  controlsButton.addEventListener('click', playControls)
+  settingsButton.addEventListener('click', goToSettings)
+  creditsButton.addEventListener('click', showCredits)
+
+
+
+
+
+
+
+
   const holder = new Grid(document.querySelector('.main-menu-grid'), 18, 30, 43, true, playerOne)
   const mainMenuGrid = new Grid(document.querySelector('.main-menu-grid'), 18, 30, 25, true, playerOne)
   mainMenuGrid.generateGrid()
@@ -532,7 +576,7 @@ function init() {
         menuTetrominoTwo.adopt(T)
       } else if (mainMenuTetromino.current.name === 'T'){
         menuTetrominoTwo.adopt(blank)
-      }else {
+      } else {
         menuTetrominoTwo.current.display = []
       }
     }, 100)
@@ -543,6 +587,47 @@ function init() {
   gravity(mainMenuTetromino, 200)
   startLetters()
 
+
+
+
+  //CONTROLS//---
+  const controlsGameGrid  = new Grid(document.querySelector('.controls-game-grid'), 12, 21, 17, true, playerOne)
+  const controlsQGrid  = new Grid(document.querySelector('.controls-tetromino-queue'), 6, 5, 13, true, playerOne)
+  const controlsHoldGrid  = new Grid(document.querySelector('.controls-tetromino-hold'), 6, 5, 13, false, playerOne)
+  controlsGameGrid.generateGrid()
+  controlsQGrid.generateGrid()
+  controlsHoldGrid.generateGrid()
+
+  //TETROMINO QUEUE//   -have a look at refactoring 
+  const controlsQueuedTetrominoOne = randomTetromino(controlsQGrid)
+  const controlsQueuedTetrominoTwo = randomTetromino(controlsQGrid)
+  
+  //TETROMINO ON HOLD//
+  const controlsTetrominoHeld = new Tetromino('', [], '', controlsHoldGrid) 
+  //tetrominoHeld.TLSpawnPosition = holdGrid.width + 4 // can this be better? having to set spawn position after creating
+  
+  //IN-PLAY TETROMINO//
+  const controlsActiveTetromino = randomTetromino(controlsGameGrid, controlsQueuedTetrominoOne, controlsQueuedTetrominoTwo, controlsTetrominoHeld, true)
+
+
+  //CONTROLS PLAY
+  function playControls(){
+    controlsActiveTetromino.spawnNew()
+    controlsQueuedTetrominoOne.spawnNew()
+    mainMenu.style.display = 'none'
+    controlsScreen.style.display = 'flex'
+  }
+
+
+  //OTHER SCREENS
+  function goToSettings(){
+    mainMenu.style.display = 'none'
+    settingsScreen.style.display = 'flex'
+  }
+  function showCredits(){
+    mainMenu.style.display = 'none'
+    creditsScreen.style.display = 'flex'
+  }
 
 
 
