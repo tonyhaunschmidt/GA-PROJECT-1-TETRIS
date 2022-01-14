@@ -157,7 +157,7 @@ function init() {
       this.removeBlocks()   //switch removeBlock out for an animation?
       for (let i = lineCounter; i > 0; i --){
         for (let j = lowestClearedCell - 3; j > 0; j--){
-          if (j % this.width !== 0 && j % this.width !== this.width - 1 && this.cells[j].classList.contains('block')){
+          if (j % this.width !== 0 && j % this.width !== this.width - 1 && j > this.width && this.cells[j].classList.contains('block')){
             const colour = this.cells[j].childNodes[0].classList
             this.cellsToChange.push(j)
             this.removeBlocks()
@@ -180,9 +180,9 @@ function init() {
   }
 
   //GAME GRID AND SIDE GRIDS//
-  const gameGrid  = new Grid(document.querySelector('.game-grid'), 12, 21, 5, false, playerOne)
-  const qGrid  = new Grid(document.querySelector('.tetromino-queue'), 6, 10, 13, true, playerOne)
-  const holdGrid  = new Grid(document.querySelector('.tetromino-hold'), 6, 10, 13, true, playerOne)
+  const gameGrid  = new Grid(document.querySelector('.game-grid'), 12, 21, 17, true, playerOne)
+  const qGrid  = new Grid(document.querySelector('.tetromino-queue'), 6, 5, 13, true, playerOne)
+  const holdGrid  = new Grid(document.querySelector('.tetromino-hold'), 6, 5, 13, false, playerOne)
   gameGrid.generateGrid()
   qGrid.generateGrid()
   holdGrid.generateGrid()
@@ -263,7 +263,7 @@ function init() {
         this.adopt(this.nextTetOne)
         this.nextInQueue()
         //updateScore()
-        //this.castShadow()
+        this.castShadow()
 
       } else {
         this.confirmMovement()
@@ -497,7 +497,7 @@ function init() {
   //NewGame
   activeTetromino.spawnNew()
   queuedTetrominoOne.spawnNew()
-  gravity(activeTetromino, setIntervalTime(playerOne))
+  //gravity(activeTetromino, setIntervalTime(playerOne))
   
 
 
@@ -539,9 +539,9 @@ function init() {
   }
 
   //MAIN-MENU PLAY//
-  //mainMenuTetromino.spawnNew()
-  //gravity(mainMenuTetromino, 200)
-  //startLetters()
+  mainMenuTetromino.spawnNew()
+  gravity(mainMenuTetromino, 200)
+  startLetters()
 
 
 
