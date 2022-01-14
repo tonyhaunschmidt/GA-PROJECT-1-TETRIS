@@ -494,10 +494,10 @@ function init() {
   document.addEventListener('keydown', handleKeyDown)
 
 
-//NewGame
-  //activeTetromino.spawnNew()
-  //queuedTetrominoOne.spawnNew()
-  //gravity(activeTetromino, setIntervalTime(playerOne))
+  //NewGame
+  activeTetromino.spawnNew()
+  queuedTetrominoOne.spawnNew()
+  gravity(activeTetromino, setIntervalTime(playerOne))
   
 
 
@@ -539,9 +539,9 @@ function init() {
   }
 
   //MAIN-MENU PLAY//
-  mainMenuTetromino.spawnNew()
-  gravity(mainMenuTetromino, 200)
-  startLetters()
+  //mainMenuTetromino.spawnNew()
+  //gravity(mainMenuTetromino, 200)
+  //startLetters()
 
 
 

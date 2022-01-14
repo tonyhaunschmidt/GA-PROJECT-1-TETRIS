@@ -2,22 +2,47 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
-    <title>GA-PROJECT-1-TETRIS!</title>
+    <title>--TETRIS--</title>
+    <link rel= 'icon' href='assests/images/T_Tetromino.png' type ='image'>
     <link rel="stylesheet" href="styles/main.css">
     <script src="scripts/appv3.js" charset="utf-8"></script>
   </head>
   <body>
-    <section class='main-menu-grid'>
-      <div></div>
-    </section>
     <main>
-      <div class='game-grid'></div>
-      <div>
-        <div class='tetromino-queue'></div>
-        <div class='tetromino-hold'></div>
-        <h1>SCORE: <span id =playerOneScore>0</span></p>
-        <h1>LEVEL: <span id='playerOneLevel'>0</span></p>
+      <div class='main-menu-grid'></div>
+      <div id='options'>
+        <button>1 PLAYER</button>
+        <button>2 PLAYER</button>
+        <button>CONTROLS</button>
+        <button>SETTINGS</button>
+        <button>CREDITS</button>
       </div>
     </main>
+    <section id='game'>
+      <div class='game-grid'></div>
+      <div class='side-bar'>
+        <div class='tetromino-queue'></div>
+        <div class='tetromino-hold'></div>
+        <h1>SCORE: <span id =playerOneScore>0</span></h1>
+        <h1>LEVEL: <span id='playerOneLevel'>0</span></h1>
+      </div>
+      <!-- FOR 2 PLAYER
+      <div class='game-grid'></div>
+      <div class='side-bar'>
+        <div class='tetromino-queue'></div>
+        <div class='tetromino-hold'></div>
+        <h1>SCORE: <span id =playerOneScore>0</span></h1>
+        <h1>LEVEL: <span id='playerOneLevel'>0</span></h1>
+      </div> -->
+    </section>
+    <section id='controls'>
+      <div class='game-grid'></div>
+      <div class='side-bar'>
+        <div class='tetromino-queue'></div>
+        <div class='tetromino-hold'></div>
+        <h1>SCORE: <span id =playerOneScore>0</span></h1>
+        <h1>LEVEL: <span id='playerOneLevel'>0</span></h1>
+      </div>
+    </section>
   </body>
 </html>

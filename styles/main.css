@@ -1,25 +1,48 @@
 
-
-main {
+body{
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   text-align: center;
+  background-color: darkslategray;
+}
+main, #game, #controls{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+
+  
 }
 
 .main-menu-grid {
   border: 1px solid black;
-  width: 50vw;
-  height: 80vw;
+  width: 60vh;
+  height: 90vh;
   display: flex;
   flex-wrap: wrap;
+  background-color: darkslateblue;
+}
+
+#options{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  height: 40vh;
+  padding: 50px;
 }
 
 .game-grid {
   border: 1px solid black;
-  width: 40vw;
-  height: 80vw;
+  width: 50vh;
+  height: 90vh;
   display: flex;
   flex-wrap: wrap;
+  background-color: darkslateblue;
+}
+
+.side-bar{
+  height: 95vh;
 }
 
 .tetromino-queue {
@@ -28,6 +51,7 @@ main {
   height: 23vw;
   display: flex;
   flex-wrap: wrap;
+  background-color: darkslateblue;
 }
 .tetromino-hold {
   border: 1px solid black;
@@ -35,6 +59,7 @@ main {
   height: 23vw;
   display: flex;
   flex-wrap: wrap;
+  background-color: darkslateblue;
 }
 
 .game-grid div {
