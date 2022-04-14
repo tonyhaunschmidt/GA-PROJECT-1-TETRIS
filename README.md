@@ -26,7 +26,7 @@ What we had learnt in class was to give a single-celled sprite movement around a
 
 I had a lot of ideas and was very excited to start coding however instead, I initially spent time pseudo-coding and writing down all my initial thoughts. This was so that I could narrow down what problems there were to solve and to try to figure out the most optimal solution for each problem so it would then be easier to code when it came to it as well as helping me keep track of my ideas.
 
-All my inital thoughts and notes are saved [here](./initial_notes.md).
+All my inital thoughts and notes are saved [here](https://raw.githubusercontent.com/tonyhaunschmidt/GA-PROJECT-1-TETRIS/main/initial_notes.md).
 
 For the initial planning stage, my focus was purely on problem solving and figuring out the game mechanics. It was hard to plan too far ahead as a large part of this project was experimenting with the grid and problem solving to acheive the MVP of the game. 
 
@@ -99,7 +99,7 @@ Now that we have all the cell positions of the Tetromino, the spawn method is ca
 
 ![spawn](readme_assets/spawn.png)
 
-![addBlocks](readme_assets/addBlocks.png) 
+![addBlocks](readme_assets/addblocks.png) 
 
 #### Movement
 An interesting problem that I enjoyed solving was the collision of a moving Tetromino in either landing or moving into a space already occupied by a block cell. 
