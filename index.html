@@ -1,111 +1,114 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8"
-    ><title>--TETRIS--</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Changa:wght@300&display=swap" rel="stylesheet">
-    <link rel= 'icon' href='assests/images/T_Tetromino.png' type ='image'>
-    <link rel="stylesheet" href="styles/main.css">
-    <script src="scripts/app.js" charset="utf-8"></script>
-  </head>
-  <body>
-    <main>
-      <div class='main-menu-grid'></div>
-      <div id='options'>
-        <button class='play-button' id='play-one-player' value='one-player'>1 PLAYER</button>
-        <button class='play-button' id='play-two-player'value='two-player'>2 PLAYER</button>
-        <button id='controls-button'>CONTROLS</button>
-        <button id='settings-button'>SETTINGS</button>
-        <button id='credits-button'>CREDITS</button>
-      </div>
-    </main>
-    <section id='game'>
-      <div class='player-screen' id='player-one-screen'>
+
+<head>
+  <meta charset="utf-8">
+  <title>--TETRIS--</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Changa:wght@300&display=swap" rel="stylesheet">
+  <link rel='icon' href='assests/images/T_Tetromino.png' type='image'>
+  <link rel="stylesheet" href="styles/main.css">
+  <script src="scripts/app.js" charset="utf-8"></script>
+</head>
+
+<body>
+  <main>
+    <div class='main-menu-grid'></div>
+    <div id='options'>
+      <button class='play-button' id='play-one-player' value='one-player'>1 PLAYER</button>
+      <button class='play-button' id='play-two-player' value='two-player'>2 PLAYER</button>
+      <button id='controls-button'>CONTROLS</button>
+      <button id='settings-button'>SETTINGS</button>
+      <button id='credits-button'>CREDITS</button>
+    </div>
+  </main>
+  <section id='game'>
+    <div class='player-screen' id='player-one-screen'>
       <div class='game-grid'></div>
-        <div class='side-bar'>
-          <div class='tetromino-queue'></div>
-          <div class='tetromino-hold'></div>
-          <div class='side-bar-text'>
-            <h1>PLAYER 1</h1>
-            <p>SCORE: <span class =playerOneScore>0</span></p>
-            <p>LEVEL: <span class='playerOneLevel'>0</span></p>
-          </div>
-        </div>
-      </div>
-      <div class='player-screen' id='player-two-screen'>
-      <div class='player-two-game-grid'></div>
-        <div class='side-bar'>
-          <div class='player-two-tetromino-queue'></div>
-          <div class='player-two-tetromino-hold'></div>
-          <div class='side-bar-text'>
-            <h1>PLAYER 2</h1>
-            <p>SCORE: <span class=playerTwoScore>0</span></p>
-            <p>LEVEL: <span class='playerTwoLevel'>0</span></p>
-          </div>
-        </div>
-      </div>
-    </section>
-    <section id='controls'>
-      <div class='controls-game-grid'></div>
       <div class='side-bar'>
-        <div class='controls-tetromino-queue'></div>
-        <div class='controls-tetromino-hold'></div>
+        <div class='tetromino-queue'></div>
+        <div class='tetromino-hold'></div>
         <div class='side-bar-text'>
-          <h3>CONTROLS</h3>
-          <div id='control-instructions'>
-            <div>
-              <h3>Player 1</h3>
-              <ul>
-                <li>S key - faster drop</li>
-                <li>A key - move left</li>
-                <li>D key - move right</li>
-                <li>W key - rotate</li>
-                <li>shift - hold/switch tetromino</li>
-              </ul>
-            </div>
-            <div>
-              <h3>Player 2</h3>
-              <ul>
-                <li>down key - faster drop</li>
-                <li>left key - move left</li>
-                <li>right key - move right</li>
-                <li>down key - rotate</li>
-                <li>space - hold/switch tetromino</li>
-              </ul>
-            </div>
-          </div>
-          <button class='back-to-main' value='refresh'>BACK TO MAIN MENU</button>
-        </div>  
+          <h1>PLAYER 1</h1>
+          <p>SCORE: <span class=playerOneScore>0</span></p>
+          <p>LEVEL: <span class='playerOneLevel'>0</span></p>
+        </div>
       </div>
-    </section>
-    <section id='settings'>
-      <h1>--SETTINGS--</h1>
-      <button class='back-to-main'>BACK TO MAIN MENU</button>
-    </section>
-    <section id='credits'>
-      <h1>--CREDITS--</h1>
-      <p>ORIGINAL BY ALEXEY PAJITNOV</p>
-      <p>RECREATED BY TONY HAUNSCHMIDT</p>
-      <button class='back-to-main'>BACK TO MAIN MENU</button>
-    </section>
-    <section id='one-player-game-over'>
-      <h1>--GAME OVER--</h1>
-      <h2>PLAYER 1</h2>
-      <p>SCORE: <span class=playerOneScore>0</span></p>
-      <p>LEVEL: <span class='playerOneLevel'>0</span></p>
-      <button class='back-to-main' value='refresh'>BACK TO MAIN MENU</button>
-    </section>
-    <section id='two-player-game-over'>
-      <h1>--GAME OVER--</h1>
-      <h2>PLAYER 1</h2>
-      <p>SCORE: <span class=playerOneScore>0</span></p>
-      <p>LEVEL: <span class='playerOneLevel'>0</span></p>
-      <h2>PLAYER 2</h2>
-      <p>SCORE: <span class=playerTwoScore>0</span></p>
-      <p>LEVEL: <span class='playerTwoLevel'>0</span></p>
-      <button class='back-to-main' value='refresh'>BACK TO MAIN MENU</button>
-    </section>
-  </body>
+    </div>
+    <div class='player-screen' id='player-two-screen'>
+      <div class='player-two-game-grid'></div>
+      <div class='side-bar'>
+        <div class='player-two-tetromino-queue'></div>
+        <div class='player-two-tetromino-hold'></div>
+        <div class='side-bar-text'>
+          <h1>PLAYER 2</h1>
+          <p>SCORE: <span class=playerTwoScore>0</span></p>
+          <p>LEVEL: <span class='playerTwoLevel'>0</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section id='controls'>
+    <div class='controls-game-grid'></div>
+    <div class='side-bar'>
+      <div class='controls-tetromino-queue'></div>
+      <div class='controls-tetromino-hold'></div>
+      <div class='side-bar-text'>
+        <h3>CONTROLS</h3>
+        <div id='control-instructions'>
+          <div>
+            <h3>Player 1</h3>
+            <ul>
+              <li>S key - faster drop</li>
+              <li>A key - move left</li>
+              <li>D key - move right</li>
+              <li>W key - rotate</li>
+              <li>shift - hold/switch tetromino</li>
+            </ul>
+          </div>
+          <div>
+            <h3>Player 2</h3>
+            <ul>
+              <li>down key - faster drop</li>
+              <li>left key - move left</li>
+              <li>right key - move right</li>
+              <li>down key - rotate</li>
+              <li>space - hold/switch tetromino</li>
+            </ul>
+          </div>
+        </div>
+        <button class='back-to-main' value='refresh'>BACK TO MAIN MENU</button>
+      </div>
+    </div>
+  </section>
+  <section id='settings'>
+    <h1>--SETTINGS--</h1>
+    <button class='back-to-main'>BACK TO MAIN MENU</button>
+  </section>
+  <section id='credits'>
+    <h1>--CREDITS--</h1>
+    <p>ORIGINAL BY ALEXEY PAJITNOV</p>
+    <p>RECREATED BY TONY HAUNSCHMIDT</p>
+    <button class='back-to-main'>BACK TO MAIN MENU</button>
+  </section>
+  <section id='one-player-game-over'>
+    <h1>--GAME OVER--</h1>
+    <h2>PLAYER 1</h2>
+    <p>SCORE: <span class=playerOneScore>0</span></p>
+    <p>LEVEL: <span class='playerOneLevel'>0</span></p>
+    <button class='back-to-main' value='refresh'>BACK TO MAIN MENU</button>
+  </section>
+  <section id='two-player-game-over'>
+    <h1>--GAME OVER--</h1>
+    <h2>PLAYER 1</h2>
+    <p>SCORE: <span class=playerOneScore>0</span></p>
+    <p>LEVEL: <span class='playerOneLevel'>0</span></p>
+    <h2>PLAYER 2</h2>
+    <p>SCORE: <span class=playerTwoScore>0</span></p>
+    <p>LEVEL: <span class='playerTwoLevel'>0</span></p>
+    <button class='back-to-main' value='refresh'>BACK TO MAIN MENU</button>
+  </section>
+</body>
+
 </html>
