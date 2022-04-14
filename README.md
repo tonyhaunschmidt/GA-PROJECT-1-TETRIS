@@ -99,7 +99,7 @@ Now that we have all the cell positions of the Tetromino, the spawn method is ca
 
 ![spawn](readme_assets/spawn.png)
 
-![addBlocks](readme_assets/addBlocks.png) 
+![addBlocks](readme_assets/addblocks.png) 
 
 #### Movement
 An interesting problem that I enjoyed solving was the collision of a moving Tetromino in either landing or moving into a space already occupied by a block cell. 
