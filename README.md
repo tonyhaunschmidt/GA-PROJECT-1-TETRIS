@@ -3,7 +3,7 @@
 ## [OPEN IN BROWSER](https://tonyhaunschmidt.github.io/GA-PROJECT-1-TETRIS/)
 
 ## BRIEF
-Using Vanilla HTML, CSS and JavaScript the assignment was to build a grid based game in one week. Wanting to challenge myself and seeing it as a big step up from what we covered in the lectures I decided to recreate the classic game, Tetris. This project really solidified my fundamental JavaScript and let me flex my logic based coding skills.
+Using Vanilla HTML, CSS and JavaScript the assignment was to build a grid based game in one week. Wanting to myself and seeing it as a big step up from what we covered in the lectures I decided to recreate the classic game, Tetris. This project really solidified my fundamental JavaScript and let me flex my logic based coding skills.
 
 ## TIMEFRAME
 
@@ -126,11 +126,19 @@ If I am being totally honest with myself, I'm not entirely satisfied with the fi
 
 Saying that, I had a tremendous amount of fun creating this as my first project. Tetris is a game I love and was a big part of my childhood. Having only started my coding journey very recently, I'm proud that I'm able to recreate something like Tetris and I'm looking forward to further experiments with JavaScript and general coding logic to create many more things as well as continuing to grow and learn new skills and technologies. 
 
+#### CHALLENGES
+* Figuring out the best way to define a Tetromino shape and the cells that made them.
+* Working out the rotation algorithm. 
+
+#### WINS
+* Taking what I learnt from class and developing these ideas to implement more complex features in my own code. 
+* Having the opportunity to really work with JavaScript and have fun problem solving.   
+
 ## FUTURE IMPROVEMENTS
 There are a few things that I began to add which you can see evidence for in my code however due to time constraints I was unable to complete.
 * Wall kicks- on rotation if a Tetromino conflicts with blocks to it's left or right, if not creating further conflicts with another block, it moves over to complete it's rotation.
 * Drop shadow- the Tetromino projects a shadow to the position it will currently end up in. 
-* 2 player- Currently 2 player is available to use however there is no interaction between the two games. I would have liked to create some kind of interaction between them. For example, the more points player 1 gets, the faster player 2's game gets. 
+* 2 player- Currently 2 player mode is available to use however there is no interaction between the two games. I would have liked to create some kind of interaction between them. For example, the more points player 1 gets, the faster player 2's game gets. 
 
 Further developments I would have liked to include are:
 * Responsive design
